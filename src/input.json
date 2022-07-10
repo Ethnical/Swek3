@@ -1,0 +1,81 @@
+{
+    "documentation": Null,
+    "functionSelector": String("3370204e"),
+    "implemented": Bool(true),
+    "kind": String("function"),
+    "modifiers": Array([]),
+    "name": String("enter"),
+    "overrides": Null,
+    "parameters": Object({
+        "id": Number(4),
+        "nodeType": String("ParameterList"),
+        "parameters": Array([Object({
+                "constant": Bool(false),
+                "id": Number(3),
+                "mutability": String("mutable"),
+                "name": String("_gateKey"),
+                "nodeType": String("VariableDeclaration"),
+                "overrides": Null,
+                "scope": Number(9),
+                "src": String("101:15:0"),
+                "stateVariable": Bool(false),
+                "storageLocation": String("default"),
+                "typeDescriptions": Object({
+                    "typeIdentifier": String("t_bytes8"),
+                    "typeString": String("bytes8")
+                }),
+                "typeName": Object({
+                    "id": Number(2),
+                    "name": String("bytes8"),
+                    "nodeType": String("ElementaryTypeName"),
+                    "src": String("101:6:0"),
+                    "typeDescriptions": Object({
+                        "typeIdentifier": String("t_bytes8"),
+                        "typeString": String("bytes8")
+                    })
+                }),
+                "value": Null,
+                "visibility": String("internal")
+            })
+        ]),
+        "src": String("100:17:0")
+    }),
+    "returnParameters": Object({
+        "id": Number(7),
+        "nodeType": String("ParameterList"),
+        "parameters": Array([Object({
+                "constant": Bool(false),
+                "id": Number(6),
+                "mutability": String("mutable"),
+                "name": String(""),
+                "nodeType": String("VariableDeclaration"),
+                "overrides": Null,
+                "scope": Number(9),
+                "src": String("134:4:0"),
+                "stateVariable": Bool(false),
+                "storageLocation": String("default"),
+                "typeDescriptions": Object({
+                    "typeIdentifier": String("t_bool"),
+                    "typeString": String("bool")
+                }),
+                "typeName": Object({
+                    "id": Number(5),
+                    "name": String("bool"),
+                    "nodeType": String("ElementaryTypeName"),
+                    "src": String("134:4:0"),
+                    "typeDescriptions": Object({
+                        "typeIdentifier": String("t_bool"),
+                        "typeString": String("bool")
+                    })
+                }),
+                "value": Null,
+                "visibility": String("internal")
+            })
+        ]),
+        "src": String("133:6:0")
+    }),
+    "scope": Number(10),
+    "stateMutability": String("nonpayable"),
+    "virtual": Bool(false),
+    "visibility": String("public")
+}
