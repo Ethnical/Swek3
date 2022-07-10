@@ -1,0 +1,89 @@
+{
+    "compiler": {
+        "version": "0.6.6+commit.6c089d02"
+    },
+    "language": "Solidity",
+    "output": {
+        "abi": [
+            {
+                "inputs": [],
+                "stateMutability": "payable",
+                "type": "constructor"
+            },
+            {
+                "inputs": [],
+                "name": "_king",
+                "outputs": [
+                    {
+                        "internalType": "address payable",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "owner",
+                "outputs": [
+                    {
+                        "internalType": "address payable",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "prize",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "stateMutability": "payable",
+                "type": "receive"
+            }
+        ],
+        "devdoc": {
+            "methods": {}
+        },
+        "userdoc": {
+            "methods": {}
+        }
+    },
+    "settings": {
+        "compilationTarget": {
+            "sol/src/example.sol": "King"
+        },
+        "evmVersion": "istanbul",
+        "libraries": {},
+        "metadata": {
+            "bytecodeHash": "ipfs"
+        },
+        "optimizer": {
+            "enabled": false,
+            "runs": 200
+        },
+        "remappings": []
+    },
+    "sources": {
+        "sol/src/example.sol": {
+            "keccak256": "0x1920eac1f6ae470c4f439e2e293ee781dca1d5f7b6588bba33e32dce1711ba8c",
+            "urls": [
+                "bzz-raw://056335d1c0141e2a74b3b4b5c9e705e522a872d49773019bc470a0443817eb5a",
+                "dweb:/ipfs/QmZWNtKHV5UGRhp1Q1A3t9Lx1vg4qrkGccuwmpPd2EBzb1"
+            ]
+        }
+    },
+    "version": 1
+}
