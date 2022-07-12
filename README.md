@@ -8,4 +8,4 @@
 ### Features
 
 - Convert Solidity file into an interface using the convert2interface
-![image](https://user-images.githubusercontent.com/23560242/178569978-34fb3aee-db0b-46ed-b104-b610cd717a0f.png)
+![image](https://user-images.githubusercontent.com/23560242/178570537-8974f67c-baa6-4e8d-b2e9-c4f8ad5ca9e5.png)
