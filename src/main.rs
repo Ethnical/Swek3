@@ -1,6 +1,6 @@
 use clap::Parser;
 mod contract2interface;
-
+mod ethCallJson;
 #[derive(clap::Parser)]
 
 struct Cli {
@@ -15,6 +15,12 @@ struct Contract2interfaceArgs {
     /// Path of the Solidity Contract (e.g : --path /src/example.sol).
     path: String,
 }
+#[derive(clap::Parser)]
+struct EthCallJsonAsmArgs {
+    #[clap(short, long)]
+    /// Path of the Json (e.g : --path /src/json.txt).
+    path: String,
+}
 
 #[derive(clap::Subcommand)]
 enum Commands {
@@ -22,6 +28,8 @@ enum Commands {
     Contract2interface(Contract2interfaceArgs),
     /// Gas Wei Converter, not implemented yet!
     WeiConverter,
+    /// Convert Json output from EthCall_debug to Asm.
+    Json2asm(EthCallJsonAsmArgs),
 }
 
 fn main() {
@@ -32,6 +40,9 @@ fn main() {
         }
         Commands::WeiConverter => {
             println!("WeiConverter");
+        }
+        Commands::Json2asm(args) => {
+            ethCallJson::exec_module_json_to_asm(&args.path);
         }
     }
 }
