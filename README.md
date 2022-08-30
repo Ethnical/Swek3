@@ -13,6 +13,7 @@
 - [ ] Get interface from non compile contract
 - [ ] get all the functions with modifiers (with grep features).
 - [ ] Check the dif between OZ implentation and the implentation inside the sol file.
+- [ ] Reorganise inside a file the interface and the contract to have them in correct order.
 - [x] Mempool Watcher
 ![image](https://user-images.githubusercontent.com/23560242/179367699-286e92ac-ce70-4f6e-9e20-434d8b565972.png)
 
