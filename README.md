@@ -17,4 +17,10 @@
 - [x] Mempool Watcher
 ![image](https://user-images.githubusercontent.com/23560242/179367699-286e92ac-ce70-4f6e-9e20-434d8b565972.png)
 
+
+
+
+### Centralisation Risk + Modifiers
+<img width="1317" alt="image" src="https://user-images.githubusercontent.com/23560242/190011679-2665d5d0-4ec9-4859-96a0-31d03d0adde2.png">
+*Usage :* `swek modifiers --path /Users/ethnical/Sec/Rust/oz_implementations/contracts/OffShore.sol -m onlyOwner -c true`
 ---
