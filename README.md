@@ -43,5 +43,6 @@ _Usage :_
 This will export the Crisk has markdown.
 
 - Modifiers
+<img width="574" alt="image" src="https://user-images.githubusercontent.com/23560242/190029156-a83fad48-c2be-485a-b5f5-7ce3f2d6305b.png">
 
 ---
