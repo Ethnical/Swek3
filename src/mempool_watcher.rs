@@ -4,9 +4,9 @@ use ethers::{
     providers::{Http, Middleware, Provider},
 };
 use futures::StreamExt;
+use std::convert::TryFrom;
 use std::env;
 use std::time::Duration;
-use std::{convert::TryFrom, fmt::format};
 
 pub fn exec_module_watcher_mempool(interval: u128) {
     println!("[+] Watching Mempool with the interval : {}", interval);
@@ -50,7 +50,7 @@ async fn watch_mempool(interval: u128) {
 fn print_tx(tx: &ethers::core::types::Transaction) -> String {
     //Units::from_wei(tx.value.unwrap(), 18).to_string();
     let mut res = String::from("");
-    let mut tx_to = String::from("");
+    let tx_to;
     let mut bloc = String::from("");
 
     match tx.block_number {

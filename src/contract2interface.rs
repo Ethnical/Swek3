@@ -1,9 +1,6 @@
 #[allow(non_snake_case)]
 use ethers::prelude::artifacts::NodeType;
-use ethers::{
-    prelude::error::SolcError,
-    solc::{self, Solc},
-};
+use ethers::{prelude::error::SolcError, solc::Solc};
 use semver::Version;
 use serde_json::{json, Value};
 
@@ -54,7 +51,7 @@ pub fn main() {
 /*Return the interface for a sol contract given. */
 pub fn compile_to_ast(solc_perso: Solc, filename: &str) -> String {
     let mut res_interface = String::new();
-    let mut First_time = true;
+    let mut first_time = true;
     let src = read_to_string(filename);
     let solc_config = format!(
         r#"{{
@@ -84,20 +81,9 @@ pub fn compile_to_ast(solc_perso: Solc, filename: &str) -> String {
     let x = s
         .compile(&datas)
         .expect("[-] Failed to compile the contract..");
-    //println!("{:?}", x);
+    println!("{:?}", x);
     let ast = x.sources["input.sol"].clone().ast.unwrap();
     for elem in ast.nodes {
-        if elem.node_type == NodeType::PragmaDirective {
-            let s3 = elem.other.get("literals").unwrap()[1]
-                .clone()
-                .to_string()
-                .replace("\"", "");
-            let s4 = elem.other.get("literals").unwrap()[2]
-                .clone()
-                .to_string()
-                .replace("\"", "");
-            let s = s3 + &s4;
-        }
         if elem.node_type == NodeType::ContractDefinition {
             let interface_name = elem.other.get("name").unwrap().as_str().unwrap();
 
@@ -130,12 +116,12 @@ pub fn compile_to_ast(solc_perso: Solc, filename: &str) -> String {
                 //res_interface += format!("Interface {} {", elem.Name);
 
                 if nd.node_type == NodeType::FunctionDefinition {
-                    if First_time {
+                    if first_time {
                         res_interface += "/* Functions */\n";
-                        First_time = false;
+                        first_time = false;
                     }
                     let kind = nd.other.get("kind").unwrap().as_str().unwrap();
-                    let mut type_param = "";
+                    let type_param;
                     let mut varname = " TBD";
                     if kind == "function" {
                         let name = nd.other.get("name").unwrap().as_str().unwrap();
