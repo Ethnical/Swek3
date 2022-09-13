@@ -22,6 +22,7 @@
 
 ### Centralisation Risk + Modifiers
 <img width="1317" alt="image" src="https://user-images.githubusercontent.com/23560242/190011679-2665d5d0-4ec9-4859-96a0-31d03d0adde2.png">
-- *Usage :* `swek modifiers --path /Users/ethnical/Sec/Rust/oz_implementations/contracts/OffShore.sol -m onlyOwner -c true`
+- *Usage :* 
+`swek modifiers --path /Users/ethnical/Sec/Rust/oz_implementations/contracts/OffShore.sol -m onlyOwner -c true`
 This will export the Crisk has markdown.
 ---
