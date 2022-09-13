@@ -2,7 +2,7 @@
 
 ## A toolbox to pentest web3 written in Rust.
 
-![image](https://user-images.githubusercontent.com/23560242/178570237-0105b9ac-e39c-447a-8455-81bdee136076.png)
+![ezgif com-gif-maker](https://user-images.githubusercontent.com/23560242/190014998-f2efbac7-3991-448e-89af-efcc0721f9f2.gif)
 
 ### Features
 
