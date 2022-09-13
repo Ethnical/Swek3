@@ -14,5 +14,6 @@ futures = "0.3"
 clap = { version = "3.2.8", features = ["derive"] }
 tokio = {version="1.17", features= ["full"]}
 colored = "2"
+ascii_table = "4.0.2"
 [build]
 rustflags = ["-C", "link-arg=-fuse-ld=lld"]
