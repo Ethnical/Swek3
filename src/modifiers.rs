@@ -1,3 +1,4 @@
+use ascii_table::{Align, AsciiTable};
 use ethers::prelude::artifacts::Node;
 use ethers::prelude::artifacts::NodeType;
 use ethers::{
@@ -8,6 +9,7 @@ use semver::Version;
 use serde_json::{json, Value};
 #[allow(non_snake_case)]
 use std::collections::HashMap;
+use std::fmt::Display;
 
 use std::fs;
 
@@ -105,6 +107,7 @@ for modifier in  {
 counter = counter + 1;*/
 pub fn display_modifiers(tab: HashMap<String, Vec<String>>, crisk: String, modifiers_args: String) {
     let mut counter_mod = 0;
+    let mut data: Vec<Vec<String>> = vec![];
     for elem in tab {
         if !modifiers_args.is_empty() {
             if elem.1.contains(&modifiers_args) {
@@ -112,7 +115,7 @@ pub fn display_modifiers(tab: HashMap<String, Vec<String>>, crisk: String, modif
                     println!("- `{}` : ", elem.0);
                 }
                 if crisk == "false" {
-                    println!("{} | {:?}", elem.0, elem.1);
+                    data.push(vec![elem.0, format!("{:?}", elem.1)]);
                 }
 
                 counter_mod += 1;
@@ -122,7 +125,8 @@ pub fn display_modifiers(tab: HashMap<String, Vec<String>>, crisk: String, modif
                 println!("- `{}` : ", elem.0);
             }
             if crisk == "false" {
-                println!("{} | {:?}", elem.0, elem.1);
+                data.push(vec![elem.0, format!("{:?}", elem.1)]);
+                //println!("{} | {:?}", elem.0, elem.1);
             }
             counter_mod += 1;
         }
@@ -139,6 +143,17 @@ pub fn display_modifiers(tab: HashMap<String, Vec<String>>, crisk: String, modif
     } else {
         println!("Number of modifiers inside the contract : {}", counter_mod);
     }
+    let mut ascii_table = AsciiTable::default();
+    ascii_table
+        .column(0)
+        .set_header("Name")
+        .set_align(Align::Left);
+    ascii_table
+        .column(1)
+        .set_header("Modifiers")
+        .set_align(Align::Center);
+
+    ascii_table.print(data);
 }
 pub fn contractname_to_id() -> usize {
     //TODO need to implement here.
