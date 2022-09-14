@@ -43,9 +43,16 @@ struct ModifiersContractArgs {
     #[clap(short, long, default_value = "")]
     /// select a modifier.
     modifiers: String,
-    #[clap(short, long, default_value = "true")]
-    /// To not generate crisk markdown (e.g : --crisk false) by default is true.
+    #[clap(long, default_value = "false")]
+    /// To not generate crisk markdown (e.g : --crisk true) by default is false.
     crisk: String,
+    #[clap(short, long, default_value = "")]
+    /// Select the contract name (e.g : --contract ERC20) by default is empty.
+    contract: String,
+    #[clap(long, default_value = "false")]
+    /// Display the list of fn inside the sol file (e.g : --list true by default is false.
+    #[clap(short, long, default_value = "false")]
+    list: String,
 }
 
 #[derive(clap::Subcommand)]
@@ -60,8 +67,8 @@ enum Commands {
     MempoolWatcher(MemPoolArgs),
     /// Not implemented yet!
     AnalyzeVerifiedContract(LinkContractArgs),
-    /// Tools to displays modifiers, crisk etc..
-    Modifiers(ModifiersContractArgs),
+    /// Tools to displays functions list,modifiers, crisk etc..
+    Contract_info(ModifiersContractArgs),
 }
 
 fn main() {
@@ -82,8 +89,14 @@ fn main() {
         Commands::AnalyzeVerifiedContract(_args) => {
             println!("not implemented yet!");
         }
-        Commands::Modifiers(args) => {
-            modifiers::exec_module_crisk(&args.path, &args.modifiers, &args.crisk);
+        Commands::Contract_info(args) => {
+            modifiers::exec_module_crisk(
+                &args.path,
+                &args.modifiers,
+                &args.crisk,
+                args.contract,
+                args.list,
+            );
         } //  mempool_watcher::exec_module_watcher_mempool(args.interval);
           // }
     }
