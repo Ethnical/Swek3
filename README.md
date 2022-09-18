@@ -6,11 +6,11 @@
 
 ### Upcoming Features.
 
+- [ ] Add a params for remapping like `--remaps @openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/`
 - [ ] Converter Wei Gas.
 - [ ] ByteCode ASM deploy.
 - [ ] Get interface from non compile contract
 - [ ] Check the dif between OZ implentation and the implentation inside the sol file.
-
 - [ ] Reorganise inside a file the interface and the contract to have them in correct order.
 
 ### Convert Solidity to Interface
