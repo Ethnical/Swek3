@@ -11,7 +11,9 @@ _Contracts Features:_
 - [ ] Add a params for remapping like `--remaps @openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/`
 - [ ] Display all the contracts names inside the folder.
 - [ ] Display if function has `_` but not internal.
-      _Others features:_
+
+_Others features:_
+
 - [ ] Converter Wei Gas.
 - [ ] ByteCode ASM deploy.
 - [ ] Get interface from non compile contract
