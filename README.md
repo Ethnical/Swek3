@@ -1,6 +1,6 @@
 # Swek3
 
-## A toolbox to pentest web3 written in Rust.
+## A web3 Security Toolbox written in Rust.
 
 ![ezgif com-gif-maker](https://user-images.githubusercontent.com/23560242/190014998-f2efbac7-3991-448e-89af-efcc0721f9f2.gif)
 
