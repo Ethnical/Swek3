@@ -11,6 +11,7 @@ _Contracts Features:_
 - [ ] Add a params for remapping like `--remaps @openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/`
 - [ ] Display all the contracts names inside the folder.
 - [ ] Display all functions who has `_` but not `internal` flag.
+- [ ] Display all the externals calls.
 
 _Others features:_
 
