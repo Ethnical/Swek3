@@ -2,7 +2,11 @@
 
 ## A web3 Security Toolbox written in Rust.
 
-![ezgif com-gif-maker](https://user-images.githubusercontent.com/23560242/190014998-f2efbac7-3991-448e-89af-efcc0721f9f2.gif)
+
+
+https://user-images.githubusercontent.com/23560242/196544138-c6de5394-f996-475a-87b0-800d7dbb6686.mov
+
+
 
 ### Upcoming Features.
 
