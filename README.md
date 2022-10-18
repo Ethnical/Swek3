@@ -40,7 +40,10 @@ A small Mempool Watcher in Rust.
 
 ### Centralisation Risk + Modifiers
 
+![image](https://user-images.githubusercontent.com/23560242/196519295-c9881b79-602d-43eb-bed8-bd8726750d3c.png)
+
 Using the paramaters `--modifier` you could specify the name of the modifier you want.
+
 
 - Crisk
   <img width="1317" alt="image" src="https://user-images.githubusercontent.com/23560242/190011679-2665d5d0-4ec9-4859-96a0-31d03d0adde2.png">
