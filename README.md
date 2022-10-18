@@ -44,7 +44,7 @@ A small Mempool Watcher in Rust.
 ![image](https://user-images.githubusercontent.com/23560242/179367699-286e92ac-ce70-4f6e-9e20-434d8b565972.png)
 
 ###  Get informations using `contract-info`.
-
+/!\ This doesn't compile the contract /!\
 To have a quick overview of the (functions, modifiers, visibility, library etc...) you can use `-m` for **modifiers** and `-v` for the **visibility**.
 
 _Usage :_
