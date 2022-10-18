@@ -1,236 +1,25 @@
-use ascii_table::{Align, AsciiTable};
-use ethers::prelude::artifacts::Node;
-use ethers::prelude::artifacts::NodeType;
-use ethers::{
-    prelude::error::SolcError,
-    solc::{CompilerOutput, Solc},
-};
-use semver::Version;
-use serde_json::{json, Value};
 #[allow(non_snake_case)]
+use ascii_table::{Align, AsciiTable};
 use std::collections::HashMap;
-use std::fmt::Display;
-use std::process;
-
 use std::fs;
+
+#[macro_use]
+use json::object;
+
+use ethers::solc::resolver::Node;
+use json::JsonValue;
+use serde::__private::de::FlatInternallyTaggedAccess;
+use serde::{Deserialize, Serialize};
+use serde_json::{to_string, Result, Value};
+use solang_parser::pt::FunctionAttribute::BaseOrModifier;
+use solang_parser::pt::FunctionAttribute::Visibility;
+use solang_parser::pt::{Base, FunctionDefinition, Identifier};
+#[allow(non_snake_case)]
+use std::process;
 use std::process::exit;
 
-pub fn exec_module_crisk(
-    path: &str,
-    modifiers_args: &str,
-    crisk_bool: &str,
-    contract_name_arg: String,
-    list: String,
-) {
-    // Let input be a valid "Standard Solidity Input JSON"
-    let contents = read_to_string(path);
+use std::env;
 
-    //println!("File : {}", contents);
-    let version = parse_pragma_version(&contents);
-    println!("[+] Detected version is  {}", version);
-
-    //let custom_error = format!("Solc version {} not found", version);
-    let res = find_or_install_svm_version(version)
-        .expect("Error happend during the downloading of the version...");
-    //res.args = vec![String::from("ast-json")];
-
-    let json_comp_output = compile_to_ast(res, path);
-    if list == "true" {
-        display_list_fn(contract_name_list(json_comp_output));
-        exit(0x0);
-    }
-    let map_modifiers = print_modifiers(json_comp_output, contract_name_arg);
-    display_modifiers(
-        map_modifiers,
-        crisk_bool.to_string(),
-        modifiers_args.to_string(),
-    );
-}
-
-/*Return the interface for a sol contract given. */
-pub fn compile_to_ast(solc_perso: Solc, filename: &str) -> CompilerOutput {
-    let src = read_to_string(filename);
-    let solc_config = format!(
-        r#"{{
-            "language": "Solidity",
-            "sources": {{ "input.sol": {{ "content": {} }} }},
-            "settings": {{
-                "optimizer": {{ "enabled": {} }},
-                "libraries": {{ 
-                    "input.sol" : {{ {} }} 
-                }},
-                "outputSelection": {{
-                    "*": {{
-                        "*": [
-                            "evm.bytecode.object", "abi"
-                        ],
-                    "": [ "*" ] }}
-                }}
-            }}
-        }}"#,
-        json!(src),
-        false,
-        ""
-    );
-
-    let datas: Value = serde_json::from_str(&solc_config).unwrap(); //convert in type Value using the serd_json lib
-    let s = solc_perso; //Solc::default();
-    let json_compiled = s
-        .compile(&datas)
-        .expect("[-] Failed to compile the contract..");
-    return json_compiled;
-}
-
-pub fn print_modifiers(
-    json_compiled: CompilerOutput,
-    contract_name: String,
-) -> HashMap<String, Vec<String>> {
-    let mut modifiers_hashmap: HashMap<String, Vec<String>> = HashMap::new();
-
-    for elem in json_compiled.sources["input.sol"]
-        .clone()
-        .ast
-        .unwrap()
-        .nodes[contractname_to_id(json_compiled, contract_name)] //weeird error with non usize why? I32 was not working?
-    .clone()
-    .nodes
-    {
-        if elem.node_type == NodeType::FunctionDefinition {
-            let name = elem.other["name"].clone();
-            let array_modifiers = get_modifiers_from_func(elem);
-            modifiers_hashmap.insert(name.to_string().replace("\"", ""), array_modifiers);
-        }
-    }
-    return modifiers_hashmap;
-}
-
-// else if (modifiers_args.is_empty()) {
-//     //No modifiers in params
-//     modifier_list.push(
-//         &modifier["modifierName"]["name"]
-//             .to_string()
-//             .replace("\"", ""),
-//     );
-// }
-
-//println!("{:#?}", modifier["modifierName"]["name"]);
-
-/*
-for modifier in  {
-    println!(modifier["name"]);
-}
-counter = counter + 1;*/
-pub fn display_modifiers(tab: HashMap<String, Vec<String>>, crisk: String, modifiers_args: String) {
-    let mut counter_mod = 0;
-    let mut data: Vec<Vec<String>> = vec![];
-    for elem in tab {
-        if !modifiers_args.is_empty() {
-            if elem.1.contains(&modifiers_args) {
-                if crisk == "true" {
-                    println!("- `{}` : ", elem.0);
-                }
-                if crisk == "false" {
-                    data.push(vec![elem.0, format!("{:?}", elem.1)]);
-                }
-
-                counter_mod += 1;
-            }
-        } else {
-            if crisk == "true" {
-                println!("- `{}` : ", elem.0);
-            }
-            if crisk == "false" {
-                data.push(vec![elem.0, format!("{:?}", elem.1)]);
-                //println!("{} | {:?}", elem.0, elem.1);
-            }
-            counter_mod += 1;
-        }
-    }
-
-    let mut ascii_table = AsciiTable::default();
-    ascii_table
-        .column(0)
-        .set_header("Function Name")
-        .set_align(Align::Left);
-    ascii_table
-        .column(1)
-        .set_header("Modifiers")
-        .set_align(Align::Center);
-
-    ascii_table.print(data);
-    if !modifiers_args.is_empty() {
-        if counter_mod != 0 {
-            println!(
-                "Number of match for the modifier \"{}\" : {}",
-                modifiers_args, counter_mod
-            );
-            separate();
-        } else {
-            println!("The number of match is equal to 0, for the modifier {}.\nThis probably an error of typo recheck correctly the modifier syntax! ", modifiers_args);
-        }
-    } else {
-        println!("Number of modifiers inside the contract : {}", counter_mod);
-    }
-}
-pub fn contractname_to_id(json_compiled: CompilerOutput, contract_name: String) -> usize {
-    let mut counter = 0;
-    for elem in json_compiled.sources["input.sol"]
-        .clone()
-        .ast
-        .unwrap()
-        .nodes
-    {
-        if counter != 0 {
-            if elem.other["name"] == contract_name {
-                return counter;
-            }
-        }
-        counter += 1;
-    }
-    if !contract_name.is_empty() {
-        println!("Didn't found the contract : \"{}\".\nThis probably an error of typo recheck correctly the contract syntax! ", contract_name);
-        separate();
-        process::exit(0x1);
-    }
-    return 0;
-}
-pub fn contract_name_list(json_compiled: CompilerOutput) -> Vec<Vec<String>> {
-    let mut tab_fn: Vec<Vec<String>> = vec![];
-    for elem in json_compiled.sources["input.sol"]
-        .clone()
-        .ast
-        .unwrap()
-        .nodes
-    {
-        if elem.other.contains_key("name") {
-            tab_fn.push(vec![elem.other["name"].to_string()]);
-        }
-    }
-    return tab_fn;
-}
-
-//for elem in json_compiled.sources["input.sol"] {
-pub fn separate() {
-    println!("--------------------------------------------------------------");
-}
-pub fn get_modifiers_from_func(elem: Node) -> Vec<String> {
-    // return the modifiers for a function given (Node).
-    //let mut counter_modifiers = 0;
-    let mut modifier_list = vec![];
-    for tab in elem.other["modifiers"].as_array() {
-        for modifier in tab {
-            //
-            //modifiers slected in arhgs through cli
-            modifier_list.push(
-                modifier["modifierName"]["name"]
-                    .clone()
-                    .to_string()
-                    .replace("\"", ""),
-            );
-        }
-    }
-    return modifier_list;
-}
 pub fn parse_pragma_version(content: &str) -> String {
     let slices: Vec<&str> = content.split("pragma solidity ").collect();
     let slices: Vec<&str> = slices.get(1).unwrap().split(";").collect();
@@ -245,27 +34,299 @@ pub fn read_to_string(filename: &str) -> String {
         filename
     ))
 }
+pub fn exec_module_crisk(
+    path: &str,
+    modifiers_args: &str,
+    crisk_bool: &str,
+    contract_name_arg: String,
+    visibility: String,
+) {
+    // Let input be a valid "Standard Solidity Input JSON"
+    let contents = read_to_string(path);
 
-pub fn display_list_fn(data: Vec<Vec<String>>) {
+    //println!("File : {}", contents);
+    let version = parse_pragma_version(&contents);
+    println!("[+] Detected version is  {}", version);
+
+    let x = Node::read(path);
+    let test = &x.unwrap();
+
+    let contracts = &test.get_data().contracts;
+
+    let libraries = &test.get_data().libraries;
+    let data = r#"{
+        "bloc_name":[]
+        }"#;
+    let mut json_glob = json::parse(data).unwrap();
+
+    let mut _hashmap_librairies: HashMap<String, HashMap<String, Vec<&str>>> = HashMap::new();
+
+    for elem in contracts {
+        json_glob["bloc_name"].push(get_json_from_type(
+            elem.name.clone(),
+            elem.functions.clone(),
+        ));
+    }
+
+    for elem in libraries {
+        //libraries
+        json_glob["bloc_name"].push(get_json_from_type_lib(
+            elem.name.clone(),
+            elem.functions.clone(),
+        ));
+    }
+
+    //println!("{}", json_glob.pretty(1));
+    let datatab = create_display_tab(json_glob, visibility, modifiers_args.to_string());
+    display_modifiers(datatab);
+    //let custom_error = format!("Solc version {} not found", version);
+
+    //res.args = vec![String::from("ast-jséon")];
+}
+pub fn tesdf(funcdef: FunctionDefinition) -> Vec<String> {
+    let mut res: Vec<String> = Vec::new();
+    for func_attribute in funcdef.attributes {
+        match func_attribute {
+            BaseOrModifier(loc, base) => res.push(base.name.to_string()),
+            _ => continue,
+        }
+    }
+    return res;
+}
+
+pub fn get_visibility(funcdef: FunctionDefinition) -> String {
+    let mut res: String = String::new();
+    for func_attribute in funcdef.clone().attributes {
+        match func_attribute {
+            Visibility(e) => return e.to_string(),
+            _ => continue,
+        }
+        /*match func_attribute.clone() {
+            Visibility => println!("sfdsfsdf {:?}", func_attribute),
+            _ => continue,
+        }*/
+        //println!("HERE => {:?}", func_attribute);
+    }
+
+    return funcdef.ty.to_string();
+}
+pub fn get_name_from_identifier(iden: &Option<Identifier>) -> String {
+    match iden {
+        Some(_ide) => return iden.clone().unwrap().name,
+        None => return String::from(""),
+    }
+}
+pub fn get_name_from_base(base: &Base) -> Vec<&String> {
+    let mut modifiers_tab = vec![];
+    for modifier_name in &base.name.identifiers {
+        if &modifier_name.name != "" {
+            // println!("Modifier => {:?}",&modifier_name.name);
+            modifiers_tab.push(&modifier_name.name);
+        }
+    }
+    return modifiers_tab;
+}
+pub fn get_name_from_base_json(base: Base) -> String {
+    for modifier_name in &base.name.identifiers {
+        if &modifier_name.name != "" {
+            return modifier_name.name.clone();
+        }
+    }
+    return "".to_string();
+}
+
+pub fn get_json_from_type_lib(name: String, vec_func_def: Vec<FunctionDefinition>) -> JsonValue {
+    //vec_func has all the function of 1 contract. String is the name of the contract
+
+    let data = r#"{
+        "funcdef": {"contract_name": "", "function_name": "","modifiers":[],"visibility":"", "isLibrary": ""}
+        }"#;
+    let mut func;
+
+    let mut fina_json = json::parse(&format!("{{\"{}\": []}}", name)).unwrap();
+    //        let parsed = json::parse().unwrap();
+
+    for elem in vec_func_def {
+        // println!("{:?}\n-----------", elem);
+        match elem.name {
+            None => continue,
+            Some(ref iden) => {
+                func = object! {
+                func_name:iden.name.clone(),
+                    modifiers: [],
+                    library: false,
+                    visibility: "".to_string()
+                };
+                let visibility = get_visibility(elem.clone());
+                let modifier = tesdf(elem.clone());
+                func["library"] = JsonValue::Boolean((true));
+                func["visibility"] = JsonValue::String((visibility));
+                func["modifiers"].push(modifier.join(","));
+                fina_json[name.clone()].push(func);
+
+                //println!("{:?}\n--------------", func["func_name"]);
+            }
+        }
+    }
+    return fina_json;
+}
+
+pub fn get_json_from_type<'a>(name: String, vec_func_def: Vec<FunctionDefinition>) -> JsonValue {
+    //vec_func has all the function of 1 contract. String is the name of the contract
+
+    let data = r#"{
+        "funcdef": {"contract_name": "", "function_name": "","modifiers":[],"visibility":"", "isLibrary": ""}
+        }"#;
+    let mut func;
+
+    let mut fina_json = json::parse(&format!("{{\"{}\": []}}", name)).unwrap();
+    //        let parsed = json::parse().unwrap();
+
+    for elem in vec_func_def {
+        // println!("{:?}\n-----------", elem);
+        match elem.name {
+            None => continue,
+            Some(ref iden) => {
+                func = object! {
+                func_name:iden.name.clone(),
+                    modifiers: [],
+                    library: false,
+                    visibility: "".to_string()
+                };
+                let visibility = get_visibility(elem.clone());
+                let modifier = tesdf(elem.clone());
+                func["visibility"] = JsonValue::String((visibility));
+                func["modifiers"].push(modifier.join(","));
+                fina_json[name.clone()].push(func);
+
+                //println!("{:?}\n--------------", func["func_name"]);
+            }
+        }
+    }
+    return fina_json;
+}
+pub fn get_modifier_from_vec_def<'a>(
+    name: &'a String,
+    vec_func_def: &'a Vec<FunctionDefinition>,
+) -> (&'a String, HashMap<String, Vec<&'a str>>) {
+    let mut modifiers_hashmap: HashMap<String, Vec<&str>> = HashMap::new();
+    for funcdef in vec_func_def {
+        let mut tmp_array: Vec<&str> = vec![];
+        let ident = &funcdef.name;
+
+        for elem_attrib in &funcdef.attributes {
+            match elem_attrib {
+                BaseOrModifier(_loc, base) => {
+                    if base.args == None {
+                        tmp_array.push(get_name_from_base(base)[0]);
+                    }
+                }
+                _ => continue,
+            }
+        }
+        if get_name_from_identifier(ident) != "" {
+            //remove the empty function "" => [] at the begininning everytime.
+            modifiers_hashmap.insert(get_name_from_identifier(ident), tmp_array);
+        }
+    }
+    //display_modifiers((name,modifiers_hashmap.clone()));
+    return (name, modifiers_hashmap);
+    //println!("Modifiers are :{:?}\n------------------------", modifiers_hashmap);
+}
+
+pub fn is_inside(args_str: String, string_to_check: String) -> bool {
+    let tab = args_str.split(",");
+    for str_split in tab {
+        if string_to_check.contains(str_split) {
+            return true;
+        }
+    }
+    return false;
+}
+
+pub fn create_display_tab(
+    tab: JsonValue,
+    visibility: String,
+    modifier: String,
+) -> Vec<Vec<String>> {
+    let mut _counter_mod = 0;
+    let mut data: Vec<Vec<String>> = vec![];
+
+    for bloc_name in tab["bloc_name"].members() {
+        for contract in bloc_name.entries() {
+            for func in contract.1.members() {
+                if modifier.len() > 0 && visibility.len() == 0 {
+                    if is_inside(modifier.clone(), func["modifiers"].to_string()) {
+                        //func["modifiers"].to_string().contains(&modifier) {
+                        data.push(vec![
+                            contract.0.to_string(),
+                            func["func_name"].to_string(),
+                            func["modifiers"].to_string(),
+                            func["visibility"].to_string(),
+                            func["library"].to_string(),
+                        ]);
+                    }
+                } else if modifier.len() > 0 && visibility.len() > 0 {
+                    if is_inside(modifier.clone(), func["modifiers"].to_string())
+                        && is_inside(visibility.clone(), func["visibility"].to_string())
+                    {
+                        //func["modifiers"].to_string().contains(&modifier) {
+                        data.push(vec![
+                            contract.0.to_string(),
+                            func["func_name"].to_string(),
+                            func["modifiers"].to_string(),
+                            func["visibility"].to_string(),
+                            func["library"].to_string(),
+                        ]);
+                    }
+                } else if modifier.len() == 0 && visibility.len() > 0 {
+                    if (is_inside(visibility.clone(), func["visibility"].to_string())) {
+                        //func["modifiers"].to_string().contains(&modifier) {
+                        data.push(vec![
+                            contract.0.to_string(),
+                            func["func_name"].to_string(),
+                            func["modifiers"].to_string(),
+                            func["visibility"].to_string(),
+                            func["library"].to_string(),
+                        ]);
+                    }
+                } else {
+                    data.push(vec![
+                        contract.0.to_string(),
+                        func["func_name"].to_string(),
+                        func["modifiers"].to_string(),
+                        func["visibility"].to_string(),
+                        func["library"].to_string(),
+                    ]);
+                }
+            }
+        }
+    }
+    return data;
+}
+
+pub fn display_modifiers(data: Vec<Vec<String>>) {
     let mut ascii_table = AsciiTable::default();
     ascii_table
         .column(0)
-        .set_header("Name Contract")
+        .set_header("Contract Name")
+        .set_align(Align::Left);
+    ascii_table
+        .column(1)
+        .set_header("Function")
+        .set_align(Align::Left);
+    ascii_table
+        .column(2)
+        .set_header("Modifier(s)")
+        .set_align(Align::Left);
+    ascii_table
+        .column(3)
+        .set_header("Visibility")
+        .set_align(Align::Left);
+    ascii_table
+        .column(4)
+        .set_header("IsLibrary")
         .set_align(Align::Left);
 
     ascii_table.print(data);
-}
-//eeeee
-pub fn find_or_install_svm_version(version: impl AsRef<str>) -> Result<Solc, SolcError> {
-    let version = version.as_ref();
-    if let Some(solc) = Solc::find_svm_installed_version(version)? {
-        println!("[+] Solc v{} already installed.", version);
-        Ok(solc)
-    } else {
-        println!(
-            "[+] Solc v{} not installed. Downloading & Installing the version now, Please wait...",
-            version
-        );
-        Ok(Solc::blocking_install(&version.parse::<Version>()?)?)
-    }
 }

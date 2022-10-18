@@ -51,8 +51,8 @@ struct ModifiersContractArgs {
     contract: String,
     #[clap(long, default_value = "false")]
     /// Display the list of fn inside the sol file (e.g : --list true by default is false.
-    #[clap(short, long, default_value = "false")]
-    list: String,
+    #[clap(short, long, default_value = "")]
+    visibility: String,
 }
 
 #[derive(clap::Subcommand)]
@@ -95,7 +95,7 @@ fn main() {
                 &args.modifiers,
                 &args.crisk,
                 args.contract,
-                args.list,
+                args.visibility,
             );
         } //  mempool_watcher::exec_module_watcher_mempool(args.interval);
           // }
