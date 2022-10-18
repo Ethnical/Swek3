@@ -43,23 +43,18 @@ A small Mempool Watcher in Rust.
 
 ![image](https://user-images.githubusercontent.com/23560242/179367699-286e92ac-ce70-4f6e-9e20-434d8b565972.png)
 
-### Centralisation Risk + Modifiers
+###  Get informations using `contract-info`.
 
+To have a quick overview of the (functions, modifiers, visibility, library etc...) you can use `-m` for **modifiers** and `-v` for the **visibility**.
+
+_Usage :_
 ![image](https://user-images.githubusercontent.com/23560242/196519295-c9881b79-602d-43eb-bed8-bd8726750d3c.png)
 
-Using the paramaters `--modifier` you could specify the name of the modifier you want.
-
-
-- Crisk
+#### Centralisation Risk
+- The `-c` set to `true` will return some crisk ready to share in markdown (need to pass the modifier).
   <img width="1317" alt="image" src="https://user-images.githubusercontent.com/23560242/190011679-2665d5d0-4ec9-4859-96a0-31d03d0adde2.png">
 
 _Usage :_
 `swek modifiers --path /Users/ethnical/Sec/Rust/oz_implementations/contracts/OffShore.sol -m onlyOwner -c true`
 
-This will export the Crisk has markdown.
 
-- Modifiers
-  Using `--modifier` will create a filter on the selected modifier.
-  <img width="574" alt="image" src="https://user-images.githubusercontent.com/23560242/190029156-a83fad48-c2be-485a-b5f5-7ce3f2d6305b.png">
-
----
