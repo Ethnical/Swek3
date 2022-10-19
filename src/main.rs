@@ -68,7 +68,7 @@ enum Commands {
     /// Not implemented yet!
     AnalyzeVerifiedContract(LinkContractArgs),
     /// Tools to displays functions list,modifiers, crisk etc..
-    Contract_info(ModifiersContractArgs),
+    ContractInfo(ModifiersContractArgs),
 }
 
 fn main() {
@@ -89,7 +89,7 @@ fn main() {
         Commands::AnalyzeVerifiedContract(_args) => {
             println!("not implemented yet!");
         }
-        Commands::Contract_info(args) => {
+        Commands::ContractInfo(args) => {
             modifiers::exec_module_crisk(
                 &args.path,
                 &args.modifiers,
