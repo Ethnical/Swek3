@@ -3,22 +3,14 @@ use ascii_table::{Align, AsciiTable};
 use std::collections::HashMap;
 use std::fs;
 
-#[macro_use]
 use json::object;
 
 use ethers::solc::resolver::Node;
 use json::JsonValue;
-use serde::__private::de::FlatInternallyTaggedAccess;
-use serde::{Deserialize, Serialize};
-use serde_json::{to_string, Result, Value};
 use solang_parser::pt::FunctionAttribute::BaseOrModifier;
 use solang_parser::pt::FunctionAttribute::Visibility;
-use solang_parser::pt::{Base, FunctionDefinition, Identifier};
+use solang_parser::pt::FunctionDefinition;
 #[allow(non_snake_case)]
-use std::process;
-use std::process::exit;
-
-use std::env;
 
 pub fn parse_pragma_version(content: &str) -> String {
     let slices: Vec<&str> = content.split("pragma solidity ").collect();
@@ -37,8 +29,8 @@ pub fn read_to_string(filename: &str) -> String {
 pub fn exec_module_crisk(
     path: &str,
     modifiers_args: &str,
-    crisk_bool: &str,
-    contract_name_arg: String,
+    _crisk_bool: &str,
+    _contract_name_arg: String,
     visibility: String,
 ) {
     // Let input be a valid "Standard Solidity Input JSON"
@@ -83,11 +75,11 @@ pub fn exec_module_crisk(
 
     //res.args = vec![String::from("ast-jséon")];
 }
-pub fn tesdf(funcdef: FunctionDefinition) -> Vec<String> {
+pub fn get_modifiers_from_funcdef(funcdef: FunctionDefinition) -> Vec<String> {
     let mut res: Vec<String> = Vec::new();
     for func_attribute in funcdef.attributes {
         match func_attribute {
-            BaseOrModifier(loc, base) => res.push(base.name.to_string()),
+            BaseOrModifier(_loc, base) => res.push(base.name.to_string()),
             _ => continue,
         }
     }
@@ -95,52 +87,19 @@ pub fn tesdf(funcdef: FunctionDefinition) -> Vec<String> {
 }
 
 pub fn get_visibility(funcdef: FunctionDefinition) -> String {
-    let mut res: String = String::new();
     for func_attribute in funcdef.clone().attributes {
         match func_attribute {
             Visibility(e) => return e.to_string(),
             _ => continue,
         }
-        /*match func_attribute.clone() {
-            Visibility => println!("sfdsfsdf {:?}", func_attribute),
-            _ => continue,
-        }*/
-        //println!("HERE => {:?}", func_attribute);
     }
 
     return funcdef.ty.to_string();
-}
-pub fn get_name_from_identifier(iden: &Option<Identifier>) -> String {
-    match iden {
-        Some(_ide) => return iden.clone().unwrap().name,
-        None => return String::from(""),
-    }
-}
-pub fn get_name_from_base(base: &Base) -> Vec<&String> {
-    let mut modifiers_tab = vec![];
-    for modifier_name in &base.name.identifiers {
-        if &modifier_name.name != "" {
-            // println!("Modifier => {:?}",&modifier_name.name);
-            modifiers_tab.push(&modifier_name.name);
-        }
-    }
-    return modifiers_tab;
-}
-pub fn get_name_from_base_json(base: Base) -> String {
-    for modifier_name in &base.name.identifiers {
-        if &modifier_name.name != "" {
-            return modifier_name.name.clone();
-        }
-    }
-    return "".to_string();
 }
 
 pub fn get_json_from_type_lib(name: String, vec_func_def: Vec<FunctionDefinition>) -> JsonValue {
     //vec_func has all the function of 1 contract. String is the name of the contract
 
-    let data = r#"{
-        "funcdef": {"contract_name": "", "function_name": "","modifiers":[],"visibility":"", "isLibrary": ""}
-        }"#;
     let mut func;
 
     let mut fina_json = json::parse(&format!("{{\"{}\": []}}", name)).unwrap();
@@ -158,9 +117,9 @@ pub fn get_json_from_type_lib(name: String, vec_func_def: Vec<FunctionDefinition
                     visibility: "".to_string()
                 };
                 let visibility = get_visibility(elem.clone());
-                let modifier = tesdf(elem.clone());
-                func["library"] = JsonValue::Boolean((true));
-                func["visibility"] = JsonValue::String((visibility));
+                let modifier = get_modifiers_from_funcdef(elem.clone());
+                func["library"] = JsonValue::Boolean(true);
+                func["visibility"] = JsonValue::String(visibility);
                 func["modifiers"].push(modifier.join(","));
                 fina_json[name.clone()].push(func);
 
@@ -174,9 +133,6 @@ pub fn get_json_from_type_lib(name: String, vec_func_def: Vec<FunctionDefinition
 pub fn get_json_from_type<'a>(name: String, vec_func_def: Vec<FunctionDefinition>) -> JsonValue {
     //vec_func has all the function of 1 contract. String is the name of the contract
 
-    let data = r#"{
-        "funcdef": {"contract_name": "", "function_name": "","modifiers":[],"visibility":"", "isLibrary": ""}
-        }"#;
     let mut func;
 
     let mut fina_json = json::parse(&format!("{{\"{}\": []}}", name)).unwrap();
@@ -194,8 +150,8 @@ pub fn get_json_from_type<'a>(name: String, vec_func_def: Vec<FunctionDefinition
                     visibility: "".to_string()
                 };
                 let visibility = get_visibility(elem.clone());
-                let modifier = tesdf(elem.clone());
-                func["visibility"] = JsonValue::String((visibility));
+                let modifier = get_modifiers_from_funcdef(elem.clone());
+                func["visibility"] = JsonValue::String(visibility);
                 func["modifiers"].push(modifier.join(","));
                 fina_json[name.clone()].push(func);
 
@@ -204,34 +160,6 @@ pub fn get_json_from_type<'a>(name: String, vec_func_def: Vec<FunctionDefinition
         }
     }
     return fina_json;
-}
-pub fn get_modifier_from_vec_def<'a>(
-    name: &'a String,
-    vec_func_def: &'a Vec<FunctionDefinition>,
-) -> (&'a String, HashMap<String, Vec<&'a str>>) {
-    let mut modifiers_hashmap: HashMap<String, Vec<&str>> = HashMap::new();
-    for funcdef in vec_func_def {
-        let mut tmp_array: Vec<&str> = vec![];
-        let ident = &funcdef.name;
-
-        for elem_attrib in &funcdef.attributes {
-            match elem_attrib {
-                BaseOrModifier(_loc, base) => {
-                    if base.args == None {
-                        tmp_array.push(get_name_from_base(base)[0]);
-                    }
-                }
-                _ => continue,
-            }
-        }
-        if get_name_from_identifier(ident) != "" {
-            //remove the empty function "" => [] at the begininning everytime.
-            modifiers_hashmap.insert(get_name_from_identifier(ident), tmp_array);
-        }
-    }
-    //display_modifiers((name,modifiers_hashmap.clone()));
-    return (name, modifiers_hashmap);
-    //println!("Modifiers are :{:?}\n------------------------", modifiers_hashmap);
 }
 
 pub fn is_inside(args_str: String, string_to_check: String) -> bool {
@@ -280,7 +208,7 @@ pub fn create_display_tab(
                         ]);
                     }
                 } else if modifier.len() == 0 && visibility.len() > 0 {
-                    if (is_inside(visibility.clone(), func["visibility"].to_string())) {
+                    if is_inside(visibility.clone(), func["visibility"].to_string()) {
                         //func["modifiers"].to_string().contains(&modifier) {
                         data.push(vec![
                             contract.0.to_string(),
