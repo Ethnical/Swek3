@@ -36,14 +36,15 @@ Just need to use the `--path` parameter.
 
 ### Mempool Watcher
 
-A small Mempool Watcher in Rust.
+A small Mempool Watcher written in Rust.
 
 - Need to add lots of features to filter every txs.
 - Next step add a features to simulates txs.
 
 ![image](https://user-images.githubusercontent.com/23560242/179367699-286e92ac-ce70-4f6e-9e20-434d8b565972.png)
 
-###  Get informations using `contract-info`.
+### Contract-info.
+Get informations using AST of the contract. 
 /!\ This doesn't compile the contract /!\
 To have a quick overview of the (functions, modifiers, visibility, library etc...) you can use `-m` for **modifiers** and `-v` for the **visibility**.
 
@@ -51,10 +52,11 @@ _Usage :_
 ![image](https://user-images.githubusercontent.com/23560242/196519295-c9881b79-602d-43eb-bed8-bd8726750d3c.png)
 
 #### Centralisation Risk
-- The `-c` set to `true` will return some crisk ready to share in markdown (need to pass the modifier).
-  <img width="1317" alt="image" src="https://user-images.githubusercontent.com/23560242/190011679-2665d5d0-4ec9-4859-96a0-31d03d0adde2.png">
+- The `-c` set to `yes` will return some crisk ready to share in markdown (need to pass the modifier).
+ ![image](https://user-images.githubusercontent.com/23560242/197516359-611afd0f-c342-4ca2-87fd-adeb56b764a7.png)
+
 
 _Usage :_
-`swek modifiers --path /Users/ethnical/Sec/Rust/oz_implementations/contracts/OffShore.sol -m onlyOwner -c true`
+`swek modifiers --path /Users/ethnical/Sec/Rust/oz_implementations/contracts/OffShore.sol -m onlyOwner -c yes`
 
 
