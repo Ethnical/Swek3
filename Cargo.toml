@@ -17,7 +17,9 @@ colored = "2"
 ascii_table = "4.0.2"
 json = "0.12.4"
 solang-parser = "0.1.18"
+
 ethers = { path = "ethers-rs", default-features = false, features = ["solc-full"]}
+
 
 #ethers-solc = { path = "/Users/ethnical/Sec/Rust/oz_implementations/ethers-rs/ethers-solc/"}
 [build]

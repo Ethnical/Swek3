@@ -70,10 +70,25 @@ pub fn exec_module_crisk(
 
     //println!("{}", json_glob.pretty(1));
     let datatab = create_display_tab(json_glob, visibility, modifiers_args.to_string());
-    display_modifiers(datatab);
+    if _crisk_bool == "yes" {
+        markdown_display(datatab);
+    } else {
+        display_modifiers(datatab);
+    }
+
     //let custom_error = format!("Solc version {} not found", version);
 
     //res.args = vec![String::from("ast-jséon")];
+}
+
+fn markdown_display(tab_modifiers: Vec<Vec<String>>) {
+    for elem in &tab_modifiers {
+        println!("- `{}` : ", elem[1]);
+    }
+    println!(
+        "Number of match for this modifier is {}",
+        tab_modifiers.len()
+    );
 }
 pub fn get_modifiers_from_funcdef(funcdef: FunctionDefinition) -> Vec<String> {
     let mut res: Vec<String> = Vec::new();
