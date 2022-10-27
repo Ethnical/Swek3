@@ -13,6 +13,8 @@
 
 _Contracts Features:_
 - [ ] Analyze directly in (etherscan, snowtrace, moonscan, etc).
+- [ ] Add the `view` `pure` etc in modifiers.
+- [ ] Analyze recursively a folder.
 - [ ] Add a params for remapping like `--remaps @openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/`
 - [ ] Display all the contracts names inside the folder.
 - [ ] Display all functions who has `_` but not `internal` flag.
