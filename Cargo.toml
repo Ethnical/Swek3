@@ -19,6 +19,7 @@ json = "0.12.4"
 solang-parser = "0.1.18"
 
 ethers = { path = "ethers-rs", default-features = false, features = ["solc-full"]}
+walkdir = "2.3.2"
 
 
 #ethers-solc = { path = "/Users/ethnical/Sec/Rust/oz_implementations/ethers-rs/ethers-solc/"}

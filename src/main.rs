@@ -1,8 +1,8 @@
 use clap::Parser;
 mod contract2interface;
+mod contractinfo;
 mod eth_call_json;
 mod mempool_watcher;
-mod modifiers;
 #[derive(clap::Parser)]
 
 struct Cli {
@@ -36,22 +36,22 @@ struct LinkContractArgs {
     link: String,
 }
 #[derive(clap::Parser, Default)]
-struct ModifiersContractArgs {
+struct ContractInfoContractArgs {
     #[clap(short, long)]
-    /// Path of the Solidity Contract (e.g : --path /src/example.sol).
+    /// Path of the Solidity Contract (e.g : --path /src/example.sol). For multiples ".sol" files, please use "." or absolute path folder (e.g: --path /contract/src/).
     path: String,
-    #[clap(short, long, default_value = "")]
-    /// select a modifier.
+    #[clap(short, long, default_value = "*")]
+    /// Display the function who matched the specify modifier (e.g : onlyOwner). For multiples modifiers use the ","  (e.g : onlyOwner, initializer).
     modifiers: String,
     #[clap(long, default_value = "false")]
-    /// To not generate crisk markdown (e.g : --crisk true) by default is false.
+    /// To not generate crisk markdown (e.g : --crisk true).
     crisk: String,
     #[clap(short, long, default_value = "")]
     /// Select the contract name (e.g : --contract ERC20) by default is empty.
     contract: String,
     #[clap(long, default_value = "false")]
-    /// Display the list of fn inside the sol file (e.g : --list true by default is false.
-    #[clap(short, long, default_value = "")]
+    /// Display the function who matched the specify visibility (e.g : public). For multiples visiblity use the ","  (e.g : public,internal).
+    #[clap(short, long, default_value = "external,public,internal,private")]
     visibility: String,
 }
 
@@ -68,7 +68,7 @@ enum Commands {
     /// Not implemented yet!
     AnalyzeVerifiedContract(LinkContractArgs),
     /// Tools to displays functions list,modifiers, crisk etc..
-    ContractInfo(ModifiersContractArgs),
+    ContractInfo(ContractInfoContractArgs),
 }
 
 fn main() {
@@ -90,7 +90,7 @@ fn main() {
             println!("not implemented yet!");
         }
         Commands::ContractInfo(args) => {
-            modifiers::exec_module_crisk(
+            contractinfo::exec_module_crisk(
                 &args.path,
                 &args.modifiers,
                 &args.crisk,
