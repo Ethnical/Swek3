@@ -1,9 +1,9 @@
 #[allow(non_snake_case)]
 use ascii_table::{Align, AsciiTable};
+use json::object;
 use std::collections::HashMap;
 use std::fs;
-
-use json::object;
+use walkdir::WalkDir;
 
 use ethers::solc::resolver::Node;
 use json::JsonValue;
@@ -21,10 +21,29 @@ pub fn parse_pragma_version(content: &str) -> String {
 pub fn read_to_string(filename: &str) -> String {
     //Add result String, None
 
-    fs::read_to_string(filename).expect(&format!(
-        "Something went wrong during the reading of : {}",
-        filename
-    ))
+    match fs::read_to_string(filename) {
+        Ok(content) => content,
+        IsADirectory => get_dir(filename),
+        Err(_) => panic!("Cannot read the file quit the program!"),
+    }
+}
+fn is_sol_file(filename: &str) -> bool {
+    return filename.contains(".sol");
+}
+
+pub fn get_dir(path: &str) -> String {
+    let mut source_code: String = String::new();
+    for e in WalkDir::new(path).into_iter().filter_map(|e| e.ok()) {
+        if e.metadata().unwrap().is_file() {
+            if is_sol_file(&e.path().display().to_string()) {
+                source_code += &(fs::read_to_string(&e.path().display().to_string())
+                    .expect("Issue happend during file the reading")
+                    + "\n");
+                //println!("{}",);
+            }
+        }
+    }
+    return source_code;
 }
 pub fn exec_module_crisk(
     path: &str,
@@ -33,14 +52,24 @@ pub fn exec_module_crisk(
     _contract_name_arg: String,
     visibility: String,
 ) {
+    // if path.contains("*") {
+    //     let folder_path = path.split("*").collect::<Vec<&str>>()[0];
+    //     let paths = fs::read_dir(folder_path).unwrap();
+
+    //     for path in paths {
+    //         println!("Name: {}", path.unwrap().path().display())
+    //     }
+    // }
+
     // Let input be a valid "Standard Solidity Input JSON"
     let contents = read_to_string(path);
+    fs::write("/tmp/swek.sol", &contents);
 
     //println!("File : {}", contents);
     let version = parse_pragma_version(&contents);
     println!("[+] Detected version is  {}", version);
 
-    let x = Node::read(path);
+    let x = Node::read("/tmp/swek.sol");
     let test = &x.unwrap();
 
     let contracts = &test.get_data().contracts;
@@ -177,6 +206,10 @@ pub fn get_json_from_type<'a>(name: String, vec_func_def: Vec<FunctionDefinition
     return fina_json;
 }
 
+pub fn is_not_empty_or_any(modifier: String) -> bool {
+    return modifier != "" && modifier != "*";
+}
+
 pub fn is_inside(args_str: String, string_to_check: String) -> bool {
     let tab = args_str.split(",");
     for str_split in tab {
@@ -198,18 +231,8 @@ pub fn create_display_tab(
     for bloc_name in tab["bloc_name"].members() {
         for contract in bloc_name.entries() {
             for func in contract.1.members() {
-                if modifier.len() > 0 && visibility.len() == 0 {
-                    if is_inside(modifier.clone(), func["modifiers"].to_string()) {
-                        //func["modifiers"].to_string().contains(&modifier) {
-                        data.push(vec![
-                            contract.0.to_string(),
-                            func["func_name"].to_string(),
-                            func["modifiers"].to_string(),
-                            func["visibility"].to_string(),
-                            func["library"].to_string(),
-                        ]);
-                    }
-                } else if modifier.len() > 0 && visibility.len() > 0 {
+                if is_not_empty_or_any(modifier.clone()) {
+                    //Match modifier name with the specify visiblity
                     if is_inside(modifier.clone(), func["modifiers"].to_string())
                         && is_inside(visibility.clone(), func["visibility"].to_string())
                     {
@@ -222,8 +245,12 @@ pub fn create_display_tab(
                             func["library"].to_string(),
                         ]);
                     }
-                } else if modifier.len() == 0 && visibility.len() > 0 {
-                    if is_inside(visibility.clone(), func["visibility"].to_string()) {
+                } else if modifier == "" {
+                    //Only functions without any modifiers with the specify visibility.
+                    //println!("FUNC MODIFIERS => {}", func["modifiers"][0].is_empty());
+                    if func["modifiers"][0].is_empty()
+                        && is_inside(visibility.clone(), func["visibility"].to_string())
+                    {
                         //func["modifiers"].to_string().contains(&modifier) {
                         data.push(vec![
                             contract.0.to_string(),
@@ -233,14 +260,17 @@ pub fn create_display_tab(
                             func["library"].to_string(),
                         ]);
                     }
-                } else {
-                    data.push(vec![
-                        contract.0.to_string(),
-                        func["func_name"].to_string(),
-                        func["modifiers"].to_string(),
-                        func["visibility"].to_string(),
-                        func["library"].to_string(),
-                    ]);
+                } else if modifier == "*" {
+                    //Match any modifiers with the specify visibility.
+                    if is_inside(visibility.clone(), func["visibility"].to_string()) {
+                        data.push(vec![
+                            contract.0.to_string(),
+                            func["func_name"].to_string(),
+                            func["modifiers"].to_string(),
+                            func["visibility"].to_string(),
+                            func["library"].to_string(),
+                        ]);
+                    }
                 }
             }
         }
