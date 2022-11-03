@@ -1,6 +1,6 @@
-## A web3 Security Toolbox written in Rust.
+## Swek the EVM Security Toolbox.
 
-Swek is a Security toolbox focused on EVM. 
+Swek is a Security toolbox focused on EVM written in Rust. 
 Most of the features are designed to help auditors to get faster in the daily works. 
 Feel free to contact me to add some features or found any bugs.
 
