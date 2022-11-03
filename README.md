@@ -6,6 +6,7 @@ Most of the features are designed to help auditors to get faster in the daily wo
 
 Feel free to contact me to add some features or found any bugs.
 
+If you are intersted in Rust, MeV, Solidity Sec join us here => https://discord.gg/uxqbK7wS
 
 ![ezgif-4-a87ec11928](https://user-images.githubusercontent.com/23560242/196544426-0aa7462d-7d73-4a58-89f4-1f7136a406b9.gif)
 
