@@ -76,5 +76,3 @@ _Others features:_
 ---
 
 ### TODO
-
-- [ ] add the `crisk` `()` on functions.
