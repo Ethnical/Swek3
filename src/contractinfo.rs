@@ -118,7 +118,7 @@ fn markdown_display(tab_modifiers: Vec<Vec<String>>) {
             println!("\nIn the contract `{}` the role `{}` has authority over the functions shown in the diagram below.",elem[0] ,elem[2]);
             old_contract_name = elem[0].clone();
         }
-        println!("- `{}` : ", elem[1]);
+        println!("- `{}()` : ", elem[1]);
     }
     println!(
         "Number of match for this modifier is {}",
