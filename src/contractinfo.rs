@@ -111,7 +111,12 @@ pub fn exec_module_crisk(
 }
 
 fn markdown_display(tab_modifiers: Vec<Vec<String>>) {
+    let mut old_contract_name = "".to_string();
     for elem in &tab_modifiers {
+        if elem[0] != old_contract_name {
+            println!("\nIn the contract `{}` the role `{}` has authority over the functions shown in the diagram below.,",elem[0] ,elem[2]);
+            old_contract_name = elem[0].clone();
+        }
         println!("- `{}` : ", elem[1]);
     }
     println!(
