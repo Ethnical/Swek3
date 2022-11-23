@@ -1,5 +1,6 @@
-#[allow(non_snake_case)]
 use ascii_table::{Align, AsciiTable};
+#[allow(non_snake_case)]
+use colored::Colorize;
 use json::object;
 use std::collections::HashMap;
 use std::fs;
@@ -114,7 +115,7 @@ fn markdown_display(tab_modifiers: Vec<Vec<String>>) {
     let mut old_contract_name = "".to_string();
     for elem in &tab_modifiers {
         if elem[0] != old_contract_name {
-            println!("\nIn the contract `{}` the role `{}` has authority over the functions shown in the diagram below.,",elem[0] ,elem[2]);
+            println!("\nIn the contract `{}` the role `{}` has authority over the functions shown in the diagram below.",elem[0] ,elem[2]);
             old_contract_name = elem[0].clone();
         }
         println!("- `{}` : ", elem[1]);
@@ -242,13 +243,13 @@ pub fn create_display_tab(
                         && is_inside(visibility.clone(), func["visibility"].to_string())
                     {
                         //func["modifiers"].to_string().contains(&modifier) {
-                        data.push(vec![
+                        data.push(underscore_has_external(vec![
                             contract.0.to_string(),
                             func["func_name"].to_string(),
                             func["modifiers"].to_string(),
                             func["visibility"].to_string(),
                             func["library"].to_string(),
-                        ]);
+                        ]));
                     }
                 } else if modifier == "" {
                     //Only functions without any modifiers with the specify visibility.
@@ -257,24 +258,24 @@ pub fn create_display_tab(
                         && is_inside(visibility.clone(), func["visibility"].to_string())
                     {
                         //func["modifiers"].to_string().contains(&modifier) {
-                        data.push(vec![
+                        data.push(underscore_has_external(vec![
                             contract.0.to_string(),
                             func["func_name"].to_string(),
                             func["modifiers"].to_string(),
                             func["visibility"].to_string(),
                             func["library"].to_string(),
-                        ]);
+                        ]));
                     }
                 } else if modifier == "*" {
                     //Match any modifiers with the specify visibility.
                     if is_inside(visibility.clone(), func["visibility"].to_string()) {
-                        data.push(vec![
+                        data.push(underscore_has_external(vec![
                             contract.0.to_string(),
                             func["func_name"].to_string(),
                             func["modifiers"].to_string(),
                             func["visibility"].to_string(),
                             func["library"].to_string(),
-                        ]);
+                        ]));
                     }
                 }
             }
@@ -283,6 +284,18 @@ pub fn create_display_tab(
     return data;
 }
 
+pub fn underscore_has_external(mut line_tab: Vec<String>) -> Vec<String> {
+    if line_tab[1].chars().nth(0).unwrap().to_string() == "_"
+        && (line_tab[3].contains("public") || line_tab[3].contains("external"))
+    {
+        line_tab[0] = format!("{}", line_tab[1]).red().to_string();
+        line_tab[1] = format!("{}", line_tab[1]).red().to_string();
+        line_tab[2] = format!("{}", line_tab[2]).red().to_string();
+        line_tab[3] = format!("{}", line_tab[3]).red().to_string();
+        //line_tab[3] = format!("{}", line_tab[0]).red().to_string();
+    }
+    line_tab
+}
 pub fn display_modifiers(data: Vec<Vec<String>>) {
     let mut ascii_table = AsciiTable::default();
     ascii_table
