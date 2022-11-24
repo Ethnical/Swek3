@@ -76,3 +76,5 @@ _Others features:_
 ---
 
 ### TODO
+
+- [ ] Reuse the Solang lib directly to get the `notice` through comments.
