@@ -52,7 +52,7 @@ _Usage :_
 
 ### Implemented Features
 
-- Visibility Checker : Display all functions in red who has `_` but not `internal` visibility.
+- Visibility Checker : Display all functions in _red_ who has `_` but not `internal` visibility.
 
 ### Upcoming Features.
 

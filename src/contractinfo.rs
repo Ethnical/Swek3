@@ -50,6 +50,7 @@ pub fn exec_module_crisk(
     path: &str,
     modifiers_args: &str,
     _crisk_bool: &str,
+    _name_contracts: &str,
     _contract_name_arg: String,
     visibility: String,
 ) {
@@ -99,9 +100,12 @@ pub fn exec_module_crisk(
     }
 
     //println!("{}", json_glob.pretty(1));
+
     let datatab = create_display_tab(json_glob, visibility, modifiers_args.to_string());
-    if _crisk_bool == "yes" {
+    if _crisk_bool == "yes" || _crisk_bool == "true" {
         markdown_display(datatab);
+    } else if _name_contracts == "true" || _name_contracts == "yes" {
+        name_contract_display(datatab);
     } else {
         display_modifiers(datatab);
     }
@@ -111,6 +115,47 @@ pub fn exec_module_crisk(
     //res.args = vec![String::from("ast-jséon")];
 }
 
+fn name_contract_display(tab_modifiers: Vec<Vec<String>>) {
+    let mut final_tab: Vec<Vec<String>> = Vec::new();
+    //display on the contracts one time.
+    let mut old_contract_name = "".to_string();
+    for elem in tab_modifiers {
+        if elem[0] != old_contract_name {
+            final_tab.push(vec![
+                elem[0].clone(),
+                "TDB".to_string(),
+                "TDB".to_string(),
+                "TDB".to_string(),
+                elem[4].clone(),
+            ]);
+            old_contract_name = elem[0].clone();
+        }
+    }
+
+    let mut ascii_table = AsciiTable::default();
+    ascii_table
+        .column(0)
+        .set_header("Contract Name")
+        .set_align(Align::Left);
+    ascii_table
+        .column(1)
+        .set_header("Hash")
+        .set_align(Align::Left);
+    ascii_table
+        .column(2)
+        .set_header("Numbers of lines")
+        .set_align(Align::Left);
+    ascii_table
+        .column(3)
+        .set_header("Version")
+        .set_align(Align::Left);
+    ascii_table
+        .column(4)
+        .set_header("IsLibrary")
+        .set_align(Align::Left);
+
+    ascii_table.print(final_tab);
+}
 fn markdown_display(tab_modifiers: Vec<Vec<String>>) {
     let mut old_contract_name = "".to_string();
     for elem in &tab_modifiers {

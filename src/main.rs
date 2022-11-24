@@ -44,6 +44,9 @@ struct ContractInfoContractArgs {
     /// Display the function who matched the specify modifier (e.g : onlyOwner). For multiples modifiers use the ","  (e.g : onlyOwner, initializer).
     modifiers: String,
     #[clap(long, default_value = "false")]
+    /// To only display contracts name (e.g --name_contracts true)
+    name_contracts: String,
+    #[clap(long, default_value = "")]
     /// To not generate crisk markdown (e.g : --crisk true).
     crisk: String,
     #[clap(short, long, default_value = "")]
@@ -94,6 +97,7 @@ fn main() {
                 &args.path,
                 &args.modifiers,
                 &args.crisk,
+                &args.name_contracts,
                 args.contract,
                 args.visibility,
             );
