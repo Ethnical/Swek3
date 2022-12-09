@@ -1,6 +1,7 @@
 use clap::Parser;
 mod contract2interface;
-mod contractinfo;
+//mod contractinfo;
+mod contractinfo_new;
 mod eth_call_json;
 mod mempool_watcher;
 #[derive(clap::Parser)]
@@ -41,7 +42,7 @@ struct ContractInfoContractArgs {
     /// Path of the Solidity Contract (e.g : --path /src/example.sol). For multiples ".sol" files, please use "." or absolute path folder (e.g: --path /contract/src/).
     path: String,
     #[clap(short, long, default_value = "*")]
-    /// Display the function who matched the specify modifier (e.g : onlyOwner). For multiples modifiers use the ","  (e.g : onlyOwner, initializer).
+    /// Display the function who matched the specify modifier (e.g : onlyOwner). For multiples modifiers use the ","  (e.g :-m onlyOwner, initializer).
     modifiers: String,
     #[clap(long, default_value = "false")]
     /// To only display contracts name (e.g --name_contracts true)
@@ -53,9 +54,12 @@ struct ContractInfoContractArgs {
     /// Select the contract name (e.g : --contract ERC20) by default is empty.
     contract: String,
     #[clap(long, default_value = "false")]
-    /// Display the function who matched the specify visibility (e.g : public). For multiples visiblity use the ","  (e.g : public,internal).
+    /// Display the function who matched the specify visibility (e.g : public). For multiples visiblity use the ","  (e.g : -v public,internal).
     #[clap(short, long, default_value = "external,public,internal,private")]
     visibility: String,
+    /// To generate the interface from the solidity code the interface (e.g : --i true).
+    #[clap(short, long, default_value = "false")]
+    interface: String,
 }
 
 #[derive(clap::Subcommand)]
@@ -100,6 +104,7 @@ fn main() {
                 &args.name_contracts,
                 args.contract,
                 args.visibility,
+                args.interface,
             );
         } //  mempool_watcher::exec_module_watcher_mempool(args.interval);
           // }
