@@ -3,6 +3,7 @@ use ascii_table::{Align, AsciiTable};
 use colored::Colorize;
 use json::object;
 use std::collections::HashMap;
+use std::collections::HashSet;
 use std::fs;
 use walkdir::WalkDir;
 
@@ -163,13 +164,20 @@ fn name_contract_display(tab_modifiers: Vec<Vec<String>>) {
     ascii_table.print(final_tab);
 }
 fn markdown_display(tab_modifiers: Vec<Vec<String>>) {
+    let mut unique_values = HashSet::new();
     let mut old_contract_name = "".to_string();
     for elem in &tab_modifiers {
         if elem[0] != old_contract_name {
+            if !unique_values.is_empty() {
+                println!("differents modifier -> {:?}", unique_values);
+            }
+
             println!("\nIn the contract `{}` the role `{}` has authority over the functions shown in the diagram below.",elem[0] ,elem[2]);
             old_contract_name = elem[0].clone();
+            unique_values.clear();
         }
         println!("- `{}()` : ", elem[1]);
+        unique_values.insert(elem[2]);
     }
     println!(
         "Number of match for this modifier is {}",
