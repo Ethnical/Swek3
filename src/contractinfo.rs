@@ -15,7 +15,11 @@ use solang_parser::pt::FunctionDefinition;
 
 pub fn parse_pragma_version(content: &str) -> String {
     let slices: Vec<&str> = content.split("pragma solidity ").collect();
-    let slices: Vec<&str> = slices.get(1).unwrap().split(";").collect();
+    let slices: Vec<&str> = slices
+        .get(1)
+        .expect("Invalid version of solidity")
+        .split(";")
+        .collect();
     let res = slices.get(0).unwrap().to_string().replace("^", "");
     res
 }
