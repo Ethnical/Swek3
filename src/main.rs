@@ -97,7 +97,7 @@ fn main() {
             println!("not implemented yet!");
         }
         Commands::ContractInfo(args) => {
-            contractinfo::exec_module_crisk(
+            contractinfo_new::exec_module_crisk(
                 &args.path,
                 &args.modifiers,
                 &args.crisk,

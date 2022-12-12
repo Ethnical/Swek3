@@ -169,7 +169,7 @@ fn markdown_display(tab_modifiers: Vec<Vec<String>>) {
     for elem in &tab_modifiers {
         if elem[0] != old_contract_name {
             if !unique_values.is_empty() {
-                println!("differents modifier -> {:?}", unique_values);
+                println!("----------------------------------------------------\nModifier in the contract : {:?}", unique_values);
             }
 
             println!("\nIn the contract `{}` the role `{}` has authority over the functions shown in the diagram below.",elem[0] ,elem[2]);
@@ -177,12 +177,13 @@ fn markdown_display(tab_modifiers: Vec<Vec<String>>) {
             unique_values.clear();
         }
         println!("- `{}()` : ", elem[1]);
-        unique_values.insert(elem[2]);
+        unique_values.insert(elem[2].clone());
     }
     println!(
         "Number of match for this modifier is {}",
         tab_modifiers.len()
     );
+    println!("Modifier in the contract : {:?}", unique_values);
 }
 pub fn get_modifiers_from_funcdef(funcdef: FunctionDefinition) -> Vec<String> {
     let mut res: Vec<String> = Vec::new();
