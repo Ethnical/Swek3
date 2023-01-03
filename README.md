@@ -73,7 +73,7 @@ _Others features:_
 - [ ] Check the dif between OZ implentation and the implentation inside the sol file.
 - [ ] Reorganise inside a file the interface and the contract to have them in correct order.
 - [ ] Create a markdown option to store as a markdown file.
-
+- [ ] Add a kind of "binwalk" on calldata (4bytes signatures).
 ---
 
 ### TODO
