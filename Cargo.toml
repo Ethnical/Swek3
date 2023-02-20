@@ -20,7 +20,9 @@ solang-parser = "0.1.18"
 
 ethers = { path = "ethers-rs", default-features = false, features = ["solc-full"]}
 walkdir = "2.3.2"
-
+secp256k1 = "0.26.0"
+hex = "0.4.3"
+sha3 = "0.10.6"
 
 #ethers-solc = { path = "/Users/ethnical/Sec/Rust/oz_implementations/ethers-rs/ethers-solc/"}
 [build]

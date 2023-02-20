@@ -3,6 +3,7 @@ mod contract2interface;
 mod contractinfo;
 mod eth_call_json;
 mod mempool_watcher;
+mod private_key_to_address;
 #[derive(clap::Parser)]
 
 struct Cli {
@@ -57,6 +58,12 @@ struct ContractInfoContractArgs {
     #[clap(short, long, default_value = "external,public,internal,private")]
     visibility: String,
 }
+#[derive(clap::Parser)]
+struct PrivateKey2AddressArgs {
+    #[clap(short, long)]
+    /// Address
+    address: String,
+}
 
 #[derive(clap::Subcommand)]
 enum Commands {
@@ -72,6 +79,8 @@ enum Commands {
     AnalyzeVerifiedContract(LinkContractArgs),
     /// Tools to displays functions list,modifiers, crisk etc..
     ContractInfo(ContractInfoContractArgs),
+    /// Convert a private key to an address
+    PrivatekeyToAddress(PrivateKey2AddressArgs),
 }
 
 fn main() {
@@ -101,6 +110,9 @@ fn main() {
                 args.contract,
                 args.visibility,
             );
+        }
+        Commands::PrivatekeyToAddress(args) => {
+            private_key_to_address::exec_private_key_to_address(&args.address);
         } //  mempool_watcher::exec_module_watcher_mempool(args.interval);
           // }
     }
