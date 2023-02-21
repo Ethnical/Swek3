@@ -1,10 +1,12 @@
 use clap::Parser;
 mod contract2interface;
-//mod contractinfo;
+mod modules;
 mod contractinfo_new;
 mod eth_call_json;
 mod mempool_watcher;
+mod onchain;
 #[derive(clap::Parser)]
+
 
 struct Cli {
     /// Struct that holds the values of the command line arguments.
@@ -39,7 +41,7 @@ struct LinkContractArgs {
 #[derive(clap::Parser, Default)]
 struct ContractInfoContractArgs {
     #[clap(short, long)]
-    /// Path of the Solidity Contract (e.g : --path /src/example.sol). For multiples ".sol" files, please use "." or absolute path folder (e.g: --path /contract/src/).
+    /// Path of the Solidity Contract (e.g : --path /src/example.sol). For multiples ".sol" files, please use "." or absolute path folder (e.g: --path /contract/src/).               The path can be an address etherscan (e.g : https://etherscan.io/address/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984)
     path: String,
     #[clap(short, long, default_value = "*")]
     /// Display the function who matched the specify modifier (e.g : onlyOwner). For multiples modifiers use the ","  (e.g :-m onlyOwner, initializer).
@@ -60,6 +62,24 @@ struct ContractInfoContractArgs {
     /// To generate the interface from the solidity code the interface (e.g : --i true).
     #[clap(short, long, default_value = "false")]
     interface: String,
+    #[clap( long, default_value = "false")]
+     /// To compile the contract on the fly (e.g : --compile_mode true).
+    compile_mode: bool,
+}
+
+#[derive(clap::Parser)]
+struct OnchainArgs {
+    #[clap(subcommand)]
+    /// Action onchain
+    action:onchain::Action, 
+
+    #[clap(short, long)]
+    /// Address of the contract
+    address: String,
+    #[clap(short, long)]
+    /// RPC of the blockchain
+    rpc: String,
+   
 }
 
 #[derive(clap::Subcommand)]
@@ -76,7 +96,11 @@ enum Commands {
     AnalyzeVerifiedContract(LinkContractArgs),
     /// Tools to displays functions list,modifiers, crisk etc..
     ContractInfo(ContractInfoContractArgs),
+    /// Tools to call onchain data as storage, bytecode.
+    Onchain(OnchainArgs),
+
 }
+
 
 fn main() {
     let _cli = Cli::parse();
@@ -105,8 +129,14 @@ fn main() {
                 args.contract,
                 args.visibility,
                 args.interface,
+                args.compile_mode
             );
-        } //  mempool_watcher::exec_module_watcher_mempool(args.interval);
+        }
+        Commands::Onchain(args) => {
+            onchain::exec_module_onchain(args.action,args.address, args.rpc)
+        }
+        
+        //  mempool_watcher::exec_module_watcher_mempool(args.interval);
           // }
     }
 }

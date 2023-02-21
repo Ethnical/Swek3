@@ -58,7 +58,7 @@ _Usage :_
 
 _Contracts Features:_
 
-- [ ] Analyze directly in (etherscan, snowtrace, moonscan, etc).
+- [X] Analyze directly in (etherscan, snowtrace, moonscan, etc).
 - [ ] Add the `view` `pure` etc in modifiers.
 - [ ] Add a params for remapping like `--remaps @openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/`
 - [ ] Display all the contracts names inside the folder.

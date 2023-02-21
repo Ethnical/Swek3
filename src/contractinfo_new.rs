@@ -1,17 +1,21 @@
-use ascii_table::{Align, AsciiTable};
 #[allow(non_snake_case)]
+use ascii_table::{Align, AsciiTable};
 use colored::Colorize;
 use json::object;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::fs;
 use walkdir::WalkDir;
-
 use ethers::solc::resolver::Node;
 use json::JsonValue;
 use solang_parser::pt::FunctionAttribute::BaseOrModifier;
 use solang_parser::pt::FunctionAttribute::Visibility;
 use solang_parser::pt::FunctionDefinition;
+
+use crate::modules::http_scraper;
+
+
+
 #[allow(non_snake_case)]
 
 pub fn parse_pragma_version(content: &str) -> String {
@@ -20,7 +24,7 @@ pub fn parse_pragma_version(content: &str) -> String {
     let res = slices.get(0).unwrap().to_string().replace("^", "");
     res
 }
-pub fn read_to_string(filename: &str) -> String {
+pub fn read_to_string(filename: &str) -> String { 
     //Add result String, None
 
     match fs::read_to_string(filename) {
@@ -32,6 +36,8 @@ pub fn read_to_string(filename: &str) -> String {
 fn is_sol_file(filename: &str) -> bool {
     return filename.contains(".sol");
 }
+
+
 
 pub fn get_dir(path: &str) -> String {
     let mut source_code: String = String::new();
@@ -48,14 +54,25 @@ pub fn get_dir(path: &str) -> String {
     return source_code;
 }
 pub fn exec_module_crisk(
-    path: &str,
+    mut path: &str,
     modifiers_args: &str,
     _crisk_bool: &str,
     _name_contracts: &str,
     _contract_name_arg: String,
     visibility: String,
     interface: String,
+    compile_mode:bool
 ) {
+    
+    if path.starts_with("http"){
+        http_scraper::fetchcode(path.to_string());
+        path = "swek_output"; 
+    }
+    //if compile_mode /* Inside the contract2interface there is the step for compiling when will need to implement this features. */
+
+
+
+
     // if path.contains("*") {
     //     let folder_path = path.split("*").collect::<Vec<&str>>()[0];
     //     let paths = fs::read_dir(folder_path).unwrap();
@@ -68,12 +85,13 @@ pub fn exec_module_crisk(
     // Let input be a valid "Standard Solidity Input JSON"
     let contents = read_to_string(path);
     fs::write("/tmp/swek.sol", &contents);
+   
 
     //println!("File : {}", contents);
     let version = parse_pragma_version(&contents);
     println!("[+] Detected version is  {}", version);
 
-    let x = Node::read("/tmp/swek.sol");
+    let x = Node::read("/tmp/swek.sol"); //add the filenane here will make something cleaner.
     let test = &x.unwrap();
 
     let contracts = &test.get_data().contracts;
@@ -111,7 +129,7 @@ pub fn exec_module_crisk(
     } else {
         display_modifiers(datatab);
     }
-
+    println!("SLOC => {:?}, comment => {:?}", count_sloc(contents.clone()).0,count_sloc(contents.clone()).1);
     //let custom_error = format!("Solc version {} not found", version);
 
     //res.args = vec![String::from("ast-jséon")];
@@ -381,3 +399,33 @@ pub fn display_modifiers(data: Vec<Vec<String>>) {
 
     ascii_table.print(data);
 }
+
+fn count_sloc(contents: String) -> (u64,u64) {
+    let mut comment = 0;
+    let lines = contents.lines();
+    let mut inside_comment = false;
+    let mut sloc = 0;
+    for line in lines {
+        let trimmed_line = line.trim();
+        if trimmed_line.starts_with("/*") {
+            inside_comment = true;
+            comment += 1;
+            //continue;
+        }
+        if inside_comment{
+            if trimmed_line.ends_with("*/"){
+                inside_comment = false;
+            }
+            continue;
+        }
+        if trimmed_line.starts_with("//"){
+            comment += 1;
+            continue;
+        }
+        if !trimmed_line.is_empty() {
+            sloc += 1;
+        }
+    }
+    (sloc,comment)
+}
+
