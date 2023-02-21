@@ -2,6 +2,10 @@
 name = "swek"
 version = "0.1.0"
 edition = "2021"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/Ethnical/Swek3"
+keywords = ["ethereum", "web3"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -20,8 +24,10 @@ solang-parser = "0.1.18"
 
 ethers = { path = "ethers-rs", default-features = false, features = ["solc-full"]}
 walkdir = "2.3.2"
-
-
+crossterm = "0.25.0"
+terminal-menu = "2.0.5"
+zip-extract = "0.1.1"
+reqwest = "0.11.13"
 #ethers-solc = { path = "/Users/ethnical/Sec/Rust/oz_implementations/ethers-rs/ethers-solc/"}
 [build]
 rustflags = ["-C", "link-arg=-fuse-ld=lld"]
