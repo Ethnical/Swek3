@@ -5,6 +5,7 @@ mod contractinfo_new;
 mod eth_call_json;
 mod mempool_watcher;
 mod onchain;
+mod private_key_to_address;
 #[derive(clap::Parser)]
 
 
@@ -81,6 +82,12 @@ struct OnchainArgs {
     rpc: String,
    
 }
+#[derive(clap::Parser)]
+struct PrivateKey2AddressArgs {
+    #[clap(short, long)]
+    /// Address 
+    privatekey: String,
+}
 
 #[derive(clap::Subcommand)]
 enum Commands {
@@ -98,8 +105,13 @@ enum Commands {
     ContractInfo(ContractInfoContractArgs),
     /// Tools to call onchain data as storage, bytecode.
     Onchain(OnchainArgs),
+    /// Convert a private key to an address
+    PrivatekeyToAddress(PrivateKey2AddressArgs),
+    
+    
 
 }
+
 
 
 fn main() {
@@ -135,8 +147,10 @@ fn main() {
         Commands::Onchain(args) => {
             onchain::exec_module_onchain(args.action,args.address, args.rpc)
         }
-        
-        //  mempool_watcher::exec_module_watcher_mempool(args.interval);
-          // }
+        Commands::PrivatekeyToAddress(args) => {
+            private_key_to_address::exec_private_key_to_address(&args.privatekey);
+        } 
+        }
+   
     }
-}
+
