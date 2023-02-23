@@ -28,6 +28,9 @@ crossterm = "0.25.0"
 terminal-menu = "2.0.5"
 zip-extract = "0.1.1"
 reqwest = "0.11.13"
+secp256k1 = "0.26.0"
+hex = "0.4.3"
+sha3 = "0.10.6"
 #ethers-solc = { path = "/Users/ethnical/Sec/Rust/oz_implementations/ethers-rs/ethers-solc/"}
 [build]
 rustflags = ["-C", "link-arg=-fuse-ld=lld"]
