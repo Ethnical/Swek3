@@ -89,6 +89,13 @@ struct PrivateKey2AddressArgs {
     privatekey: String,
 }
 
+#[derive(clap::Parser)]
+struct GetSelectorsArgs {
+    #[clap(short, long)]
+    /// Bytecode of the contract
+    bytecode: String,
+}
+
 #[derive(clap::Subcommand)]
 enum Commands {
     /// Extract the contract interface from a Solidity file.
@@ -107,9 +114,8 @@ enum Commands {
     Onchain(OnchainArgs),
     /// Convert a private key to an address
     PrivatekeyToAddress(PrivateKey2AddressArgs),
-    
-    
-
+    /// Get the implemented selectors from the bytecode
+    GetSelectors(GetSelectorsArgs),
 }
 
 
@@ -148,9 +154,12 @@ fn main() {
             onchain::exec_module_onchain(args.action,args.address, args.rpc)
         }
         Commands::PrivatekeyToAddress(args) => {
-            private_key_to_address::exec_private_key_to_address(&args.privatekey);
-        } 
+            private_key_to_address::exec_private_key_to_address(&args.privatekey)
         }
+        Commands::GetSelectors(args) => {
+            get_selectors::exec_get_selectors(&args.bytecode);
+        }
+    }
    
     }
 
