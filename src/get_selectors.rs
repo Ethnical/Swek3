@@ -1,5 +1,9 @@
 use ascii_table::{Align, AsciiTable};
 use colored::Colorize;
+use ethers::{
+    core::types::Address,
+    providers::{Http, Middleware, Provider},
+};
 use heimdall::decompile::util;
 use heimdall_common::ether::{
     evm::opcodes::opcode,
@@ -43,6 +47,59 @@ pub fn exec_get_selectors(bytecode: &str) {
         data.push(vec![selector, signatures.to_string()]);
     }
     ascii_table.print(data);
+}
+
+pub fn exec_get_selectors_onchain(address: &str, rpc: &str) {
+    // create new runtime block
+    let rt = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .unwrap();
+
+    // We are decompiling a contract address, so we need to fetch the bytecode from the RPC provider.
+    let contract_bytecode = rt.block_on(async {
+        // make sure the RPC provider isn't empty
+        if rpc.len() <= 0 {
+            println!("rpc url is not set");
+            std::process::exit(1);
+        }
+
+        // create new provider
+        let provider = match Provider::<Http>::try_from(rpc) {
+            Ok(provider) => provider,
+            Err(_) => {
+                println!(
+                    "{}",
+                    &format!("failed to connect to RPC provider '{}' .", rpc)
+                );
+                std::process::exit(1)
+            }
+        };
+
+        // safely unwrap the address
+        let address = match address.parse::<Address>() {
+            Ok(address) => address,
+            Err(_) => {
+                println!("{}", &format!("failed to parse address '{}' .", address));
+                std::process::exit(1)
+            }
+        };
+
+        // fetch the bytecode at the address
+        let bytecode_as_bytes = match provider.get_code(address, None).await {
+            Ok(bytecode) => bytecode,
+            Err(_) => {
+                println!(
+                    "{}",
+                    &format!("failed to fetch bytecode from '{}' .", address)
+                );
+                std::process::exit(1)
+            }
+        };
+        bytecode_as_bytes.to_string().replacen("0x", "", 1)
+    });
+
+    exec_get_selectors(&contract_bytecode);
 }
 
 // get_opcodes_from_bytecode convert the bytecode to opcodes

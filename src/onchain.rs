@@ -1,7 +1,6 @@
-#[allow(non_snake_case)]
-use serde_json::Value;
-use std::fs;
-use terminal_menu::{menu, label, scroll,run,button,mut_menu};
+use crate::get_selectors;
+use crate::modules;
+use crossterm::style::Color;
 use ethers::{
     abi::AbiEncode,
     providers::{Http, Middleware, Provider},
@@ -66,7 +65,7 @@ pub fn exec_module_onchain(action: Action, address: String, _rpc: String) {
     //     label("Colorize me").colorize(Color::Magenta),
     //     scroll("Me too!", vec!["foo", "bar"]).colorize(Color::Green)
     // ]);
-    if rpc.is_empty(){
+    if _rpc.is_empty() {
         let menu = menu(vec![
 
             // label:
@@ -95,10 +94,16 @@ pub fn exec_module_onchain(action: Action, address: String, _rpc: String) {
         rpc = _rpc;
     }
     let provider = Provider::<Http>::try_from(rpc).unwrap();
-    
+
     //let provider = Provider::<Http>::try_from(rpc).unwrap();
-  /*   match action {
-    Action::bytecode => get_bytecode(address);
-    } */
+    match action {
+        //Action::bytecode => get_bytecode(address),
+        Action::bytecode => {}
+        Action::get_selectors => get_selectors::exec_get_selectors_onchain(&address, &rpc),
+        Action::storage => {}
+        Action::storage_admin => {}
+        Action::storage_beaconAddress => {}
+        Action::storage_eip1967 => {}
+    }
     //
 }
