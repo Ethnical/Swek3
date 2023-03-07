@@ -5,8 +5,9 @@ use ethers::{
     abi::AbiEncode,
     providers::{Http, Middleware, Provider},
 };
-use crossterm::style::Color;
-use crate::modules;
+use serde_json::Value;
+use std::fs;
+use terminal_menu::{button, label, menu, mut_menu, run, scroll};
 
 
 
@@ -45,6 +46,8 @@ pub enum Action {
     storage_admin,
     /// Get the bytecode of the contract.
     bytecode,
+    /// Get the selectors of the contact.
+    get_selectors,
  }
 
 

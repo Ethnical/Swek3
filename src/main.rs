@@ -1,9 +1,10 @@
 use clap::Parser;
 mod contract2interface;
-mod modules;
 mod contractinfo_new;
 mod eth_call_json;
+mod get_selectors;
 mod mempool_watcher;
+mod modules;
 mod onchain;
 mod private_key_to_address;
 #[derive(clap::Parser)]
