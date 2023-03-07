@@ -11,27 +11,21 @@ env:
 
 jobs:
   build:
-    name: Publish for ${{ matrix.os }}
+    name: Tests for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         include:
           - os: ubuntu-latest
-            artifact_name: swek
-            asset_name: swek-linux-amd64
+          - os: windows-latest
           - os: macos-latest
-            artifact_name: swek
-            asset_name: swek-macos-amd64
 
     steps:
       - uses: actions/checkout@v2
+      - name: Run unit tests
+        working-directory: .
+        run: cargo test --workspace --all-features --verbose
+
       - name: Build Binaries
         working-directory: .
-        run: cargo build --release
-      - name: Upload Binaries
-        uses: svenstaro/upload-release-action@v2
-        with:
-          file: ./target/release/${{ matrix.artifact_name }}
-          asset_name: ${{ matrix.asset_name }}
-          tag: ${{ github.ref }}
-          overwrite: true
+        run: cargo build --release --verbose
