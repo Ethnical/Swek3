@@ -96,7 +96,6 @@ pub fn exec_module_onchain(action: Action, address: String, _rpc: String) {
     else{
         rpc = _rpc;
     }
-    let provider = Provider::<Http>::try_from(rpc).unwrap();
 
     //let provider = Provider::<Http>::try_from(rpc).unwrap();
     match action {
