@@ -38,6 +38,9 @@ home = "0.5.4"
 env_logger = "0.10.0"
 log = "0.4.17"
 
+heimdall = { git = "https://github.com/Jon-Becker/heimdall-rs/" }
+heimdall-common = { git = "https://github.com/Jon-Becker/heimdall-rs/" }
+
 #ethers-solc = { path = "/Users/ethnical/Sec/Rust/oz_implementations/ethers-rs/ethers-solc/"}
 [build]
 rustflags = ["-C", "link-arg=-fuse-ld=lld"]
