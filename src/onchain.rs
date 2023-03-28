@@ -1,13 +1,13 @@
 #[allow(non_snake_case)]
 use serde_json::Value;
-use std::fs;
+use std::{fs, process};
 use terminal_menu::{menu, label, scroll,run,button,mut_menu};
 use ethers::{
     abi::AbiEncode,
     providers::{Http, Middleware, Provider},
 };
 use crossterm::style::Color;
-use crate::modules;
+use crate::{modules,onchain, onchain_subcommand, mempool_watcher, eth_call_json};
 
 
 
@@ -60,7 +60,32 @@ pub fn get_bytecode(address:String) -> String{
     let bytecode: String = "".to_string();   
     return bytecode; 
 }
-pub fn exec_module_onchain(action: Action, address: String, _rpc: String) {
+pub fn exec_module_onchain(cmd:onchain_subcommand) {
+    match cmd{
+        onchain_subcommand::bytecode => {
+            println!("storage");
+        },
+        onchain_subcommand::storage => {
+            println!("storage");
+        },
+        onchain_subcommand::storage_eip1967 => {
+            println!("storage_eip1967");
+        },
+        onchain_subcommand::storage_beaconAddress => {
+            println!("storage_beaconAddress");
+        },
+        onchain_subcommand::storage_admin => {
+            println!("storage_admin");
+        },
+        onchain_subcommand::MempoolWatcher(args)=> {
+            mempool_watcher::exec_module_watcher_mempool(args.interval);
+        },
+        onchain_subcommand::JsonToAsm(args)=> {
+            eth_call_json::exec_module_JsonToAsm(&args.path);
+        },
+    }
+    process::exit(1);
+    let mut _rpc = "".to_string();
     let mut rpc = "".to_string();
     // let menu = menu(vec![
     //     label("Colorize me").colorize(Color::Magenta),

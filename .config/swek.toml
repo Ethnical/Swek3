@@ -1,0 +1,13 @@
+[RapidForge]
+
+[RapidForge.normal]
+path_store = "~/swek/audits" # Path to your folder where you want to locate Audit. 
+path_template_solidity = "~/.config/swek/PoC_template_Audit.s.sol" #Path to the Forge template for Incident Reponse.
+path_template_toml = "~/.config/swek/foundry_audit.toml" #Path to foundry.toml for the Forge template for Incident Reponse.
+path_template_interface = "~/.config/swek/mother_of_all_interface.sol"
+
+[RapidForge.incident]
+path_store = "~/swek/incidents" # Path to your folder where you want to locate Incident. 
+path_template_solidity = "~/.config/swek/PoC_template_Incident.s.sol" #Path to the Forge template  solidity for auditing.
+path_template_toml = "~/.config/swek/foundry_incident.toml" #Path to foundry.toml for the Forge template for Auditing.
+path_template_interface = "~/.config/swek/mother_of_all_interface.sol"
