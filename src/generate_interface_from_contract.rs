@@ -6,7 +6,7 @@ use serde_json::{json, Value};
 
 use std::fs;
 
-pub fn exec_module_contract2interface(path: &str) {
+pub fn exec_module_GenerateInterfaceFromContract(path: &str) {
     let contents = read_to_string(path);
     let version = parse_pragma_version(&contents);
     println!("[+] Detected version is  {}", version);
