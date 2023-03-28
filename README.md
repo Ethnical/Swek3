@@ -26,18 +26,20 @@ Just need to use the `--path` parameter.
 
 
 ## Onchain
-A lists of tools for onchain contracts and incidents response.
+> A lists of tools for onchain contracts and incidents response.
 #### get-selectors
-Design to get all the selectors from the bytecode of a contract.
+> Design to get all the selectors from the bytecode of a contract.
 
-|||
-|||
+|Paramaters| Informations|
+|----------|-------------|
+|`--address`| address of the contract|
+|`--rpc`| Link to the rpc of the wanted blockchain|
 
 <img width="1186" alt="CleanShot 2023-03-28 at 21 39 42@2x" src="https://user-images.githubusercontent.com/23560242/228348814-fc391333-400a-4268-84a3-6effac7fe0f6.png">
 
 
 ### Mempool Watcher
-A small Mempool Watcher written in Rust.
+> A small Mempool Watcher written in Rust.
 
 - Need to add lots of features to filter every txs.
 - Next step add a features to simulates txs.
