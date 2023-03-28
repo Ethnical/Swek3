@@ -2,12 +2,12 @@ use clap::{Command, Parser};
 mod contractinfo_new;
 mod eth_call_json;
 mod generate_interface_from_contract;
+mod get_signature;
 mod mempool_watcher;
 mod modules;
 mod onchain;
 mod private_key_to_address;
 mod rapidForge;
-
 #[derive(clap::Parser)]
 
 struct Cli {
@@ -157,6 +157,18 @@ pub enum onchain_subcommand {
     storage_admin,
     /// Get the bytecode of the contract.
     bytecode,
+    /// Get the selectors of the contact.
+    get_selectors(GetSelectorsArgs),
+}
+
+#[derive(clap::Parser)]
+pub struct GetSelectorsArgs {
+    #[clap(short, long)]
+    /// link to rpc (e.g : https://mainnet.infura.io/v3/your_api_key)
+    rpc: String,
+    #[clap(short, long)]
+    /// Address of the contract (e.g : 0x1f9840a85d5af5bf1d1762f925bdaddc4201f984)
+    address: String,
 }
 
 #[derive(clap::Parser)]
