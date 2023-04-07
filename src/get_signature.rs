@@ -40,7 +40,7 @@ pub fn exec_get_selectors(bytecode: &str) {
         };
         let mut signatures = "".to_string();
         for function in functions {
-            signatures = function.signature + ",";
+            signatures += &(function.signature + ",");
         }
         signatures.pop(); // Remove the last ","
 
