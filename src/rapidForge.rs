@@ -91,7 +91,7 @@ fn copytemplates(
     let temp_toml = read_to_file(check_if_folder_is_relative(path_template_toml));
     let path_toml = format!("{}/{}", path_store, "foundry.toml");
     let path_sol = format!("{}/script/{}", path_store, "PoC.s.sol");
-    let path_interfaces = format!("{}/src/{}", path_store, "MotherOfAllInterfaces.sol");
+    let path_interfaces = format!("{}/src/{}", path_store, "mother_of_all_interface.sol");
     write_to_file(path_toml, temp_toml);
     write_to_file(path_sol, temp_sol);
     write_to_file(path_interfaces, mother_of_all_interfaces);
@@ -103,7 +103,7 @@ fn copytemplates(
 }
 
 fn init_foundry(path: &str) {
-    let cmd = format!("forge init {}", path);
+    let cmd = format!("forge init {} --no-commit", path);
     let output = Command::new("bash")
         .arg("-c")
         .arg(cmd)
