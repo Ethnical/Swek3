@@ -96,3 +96,15 @@ _Others features:_
 
 - [ ] Reuse the Solang lib directly to get the `notice` through comments.
 - [ ] Use the solang library
+
+
+## Install & Run
+- There is the released version here (just need to run the binary) -> https://github.com/Ethnical/Swek3/releases 
+- If you don't want or the version is not supported you can build from source by the following steps: 
+```bash
+git clone https://github.com/Ethnical/Swek3.git
+cd Swek3
+cargo build
+./target/debug/swek --help #This is the binary `swek`
+mv ./target/debug/swek /usr/bin/swek #move the binary to `/usr/bin/` to avoid to each time need to path or you need to update the path.
+```
