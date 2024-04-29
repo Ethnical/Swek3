@@ -43,7 +43,7 @@ interface IERC20 {
 
     function deposit(uint256 wad) external returns (bool);
 
-    function owner() external view virtual returns (address);
+    function owner() external view returns (address);
 }
 
 interface ICErc20Delegate {
@@ -846,7 +846,6 @@ interface Uni_Router_V3 {
 }
 
 interface Uni_Router_V2 {
-    function WETH() external view returns (address);
 
     function addLiquidity(
         address tokenA,
@@ -1815,7 +1814,6 @@ interface IMasterChef {
 
     function BONUS_MULTIPLIER() external view returns (uint256);
 
-    function WETH() external view returns (address);
 
     function _become(address proxy) external;
 
@@ -2146,7 +2144,6 @@ interface IPancakePair {
 }
 
 interface IPancakeRouter {
-    function WETH() external view returns (address);
 
     function addLiquidity(
         address tokenA,
@@ -2445,8 +2442,6 @@ interface IWBNB {
     function deposit() external payable;
 
     function allowance(address, address) external view returns (uint256);
-
-    fallback() external payable;
 
     event Approval(address indexed src, address indexed guy, uint256 wad);
     event Transfer(address indexed src, address indexed dst, uint256 wad);
@@ -3010,7 +3005,6 @@ interface MonoXPool {
     );
     event URI(string value, uint256 indexed id);
 
-    function WETH() external view returns (address);
 
     function admin() external view returns (address);
 
@@ -4407,7 +4401,6 @@ interface IHarvestUsdcVault {
 }
 
 interface IUniswapV2Router {
-    function WETH() external view returns (address);
 
     function addLiquidity(
         address tokenA,
